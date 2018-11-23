@@ -1,18 +1,19 @@
 package com.android.soneli.ses_almacen;
 
 public class Pedido {
-    private String PedidoId;
-    private String ArticuloCodigo;
-    private String ArticuloDescripcion;
-    private String TPedido;
 
-    public String getPedidoId() {
-        return PedidoId;
+    public Pedido (String ArticuloCodigo,String ArticuloDescripcion,int TPedido,int captura){
+        this.ArticuloCodigo=ArticuloCodigo;
+        this.ArticuloDescripcion=ArticuloDescripcion;
+        this.TPedido=TPedido;
+        this.captura=captura;
     }
 
-    public void setPedidoId(String pedidoId) {
-        PedidoId = pedidoId;
-    }
+
+     String ArticuloCodigo;
+     String ArticuloDescripcion;
+     int TPedido;
+     int captura;
 
     public String getArticuloCodigo() {
         return ArticuloCodigo;
@@ -30,12 +31,19 @@ public class Pedido {
         ArticuloDescripcion = articuloDescripcion;
     }
 
-    public String getTPedido() {
+    public int getTPedido() {
         return TPedido;
     }
 
-    public void setTPedido(String TPedido) {
+    public void setTPedido(int TPedido) {
         this.TPedido = TPedido;
     }
 
+    public int getCaptura() {
+        return captura;
+    }
+
+    public void setCaptura(int captura) {
+        this.captura = captura;
+    }
 }
