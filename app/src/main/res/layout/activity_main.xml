@@ -7,6 +7,15 @@
     tools:context=".MainActivity"
     >
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:minHeight="?attr/actionBarSize"
+        android:background="@color/colorPrimaryDark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+    </android.support.v7.widget.Toolbar>
 
     <LinearLayout
         android:id="@+id/liner1"
@@ -18,11 +27,12 @@
         android:orientation="horizontal"
         android:weightSum="1"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/tFolio"
             android:layout_width="1dp"
             android:layout_height="match_parent"
 
@@ -31,17 +41,26 @@
             android:text="Folio:" />
 
         <EditText
-            android:id="@+id/editText"
+            android:id="@+id/eFolio"
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.45"
+            android:layout_weight="0.22"
             android:ems="10"
-            android:hint="Escanea un folio"
-            android:inputType="textPersonName"
-            android:padding="2dp" />
+            android:hint="Esc.Folio"
+            android:inputType="number"
+            android:padding="2dp"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/tblanco3"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.23"
+            android:text=""
+            android:padding="2dp"/>
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/bBuscar"
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:layout_weight="0.35"
@@ -66,32 +85,31 @@
         app:layout_constraintTop_toBottomOf="@+id/liner1">
 
         <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/tCodigoArt"
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:layout_weight="0.18"
-            android:text="Codigo:"
-            android:padding="2dp"/>
+            android:padding="2dp"
+            android:text="Codigo:" />
 
         <EditText
-            android:id="@+id/editText2"
+            android:id="@+id/eCodigoArt"
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:padding="2dp"
             android:layout_weight="0.45"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:text=""
             android:hint="Escanea el codigo"
-            />
+            android:inputType="textPersonName"
+            android:padding="2dp"
+            android:text="" />
 
-            <RadioButton
-                android:id="@+id/radioButton4"
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.35"
-                android:padding="2dp"
-                android:text="Captura" />
+        <RadioButton
+            android:id="@+id/rbCptura"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.35"
+            android:padding="2dp"
+            android:text="Captura" />
 
     </LinearLayout>
 
@@ -125,8 +143,9 @@
             android:padding="2dp"
             android:layout_weight="0.22"
             android:ems="10"
-            android:inputType="textPersonName"
+            android:inputType="number"
             android:text=""
+            android:textAlignment="center"
             android:hint="N° Cajas"
             />
 
@@ -179,7 +198,8 @@
             android:layout_weight="0.22"
             android:ems="10"
             android:hint="P x Caja"
-            android:inputType="textPersonName"
+            android:inputType="number"
+            android:textAlignment="center"
             android:padding="2dp" />
 
         <TextView
@@ -290,12 +310,23 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/bGuardar"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="Guardar" />
-    </LinearLayout>>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="125dp"
+        android:layout_height="41dp"
+android:contentDescription="Logotipo Soneli"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@+id/toolbar"
+        app:layout_constraintTop_toTopOf="@+id/toolbar"
+        app:srcCompat="@drawable/ogo" />
 
 
 
