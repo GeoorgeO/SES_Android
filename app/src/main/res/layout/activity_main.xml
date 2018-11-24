@@ -301,8 +301,6 @@
         android:gravity="center_vertical|center_horizontal"
         android:minHeight="30dp"
         android:orientation="horizontal"
-        android:paddingLeft="100dp"
-        android:paddingRight="100dp"
         android:weightSum="1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -310,10 +308,24 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
-            android:id="@+id/bGuardar"
-            android:layout_width="wrap_content"
+            android:id="@+id/bLimpiar"
+            android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="0.25"
+            android:text="Limpiar" />
+
+        <TextView
+            android:id="@+id/tblanco4"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.40"
+            android:text="" />
+
+        <Button
+            android:id="@+id/bGuardar"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.25"
             android:text="Guardar" />
     </LinearLayout>
 

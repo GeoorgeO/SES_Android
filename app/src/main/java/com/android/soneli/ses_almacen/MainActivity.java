@@ -7,6 +7,7 @@ package com.android.soneli.ses_almacen;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     Button bAgregar;
     Button bBuscar;
     Button bGuardar;
+    Button bLimpiar;
 
     AlertDialog.Builder builder;
     AlertDialog.Builder baviso;
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         bAgregar=(Button)findViewById(R.id.bagregar);
         bBuscar=(Button) findViewById(R.id.bBuscar);
         bGuardar=(Button) findViewById(R.id.bGuardar);
+        bLimpiar=(Button) findViewById(R.id.bLimpiar);
 
         arrayArticulos=new ArrayList<Pedido>();
 
@@ -90,13 +93,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER))
                 {
-
-
-
                     RecibaDatos(eFolio.getText().toString());
-
-
-
                     return true;
                 }// end if.
 
@@ -192,6 +189,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        bLimpiar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                limpiarTodo();
+            }
+        });
+
         rbCaptura.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -207,6 +211,15 @@ public class MainActivity extends AppCompatActivity {
                 if(rbEdicion.isChecked()){
                     rbCaptura.setChecked(false);
                 }
+            }
+        });
+
+        Lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //parent.getChildAt(position).setBackgroundColor(Color.BLUE);
+                Toast.makeText(MainActivity.this, "clic", Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -246,6 +259,7 @@ public class MainActivity extends AppCompatActivity {
                             Lista.setAdapter(Adapter);
 
                             eCodigoArt.setEnabled(true);
+                            eFolio.setEnabled(false);
                         }else{
                             Toast.makeText(MainActivity.this, "Folio No encontrado", Toast.LENGTH_SHORT).show();
                             eCodigoArt.setEnabled(false);
@@ -293,6 +307,15 @@ public class MainActivity extends AppCompatActivity {
         rbEdicion.setChecked(false);
     }
 
+    private void limpiarTodo(){
+        eFolio.setText("");
+        limpiarAgregado();
+        eFolio.setEnabled(true);
+        inhabilitaTodo();
+
+        Lista.setAdapter(null);
+    }
+
     public Dialog onCreateDialog(String titulo,String mensaje) {
 
 
@@ -307,6 +330,19 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         // User clicked OK, so save the mSelectedItems results somewhere
                         // or return them to the component that opened the dialog
+
+                        int lRecibido;
+                        Pedido Articulo;
+
+                        lRecibido=(Integer.parseInt(eCajas.getText().toString()) * Integer.parseInt(ePxC.getText().toString()));
+                        Articulo=new Pedido(eCodigoArt.getText().toString().replace(" ",""),"ARTICULO NUEVO",0,lRecibido);
+                        arrayArticulos.add(Articulo);
+
+                        Lista.setAdapter(null);
+                        Lista.setAdapter(Adapter);
+
+                        limpiarAgregado();
+
 
                     }
                 })

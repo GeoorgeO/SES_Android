@@ -18,7 +18,7 @@
             android:layout_height="match_parent"
             android:text="----"
             android:id="@+id/ArticuloCodigo"
-            android:textSize="7sp"
+            android:textSize="8sp"
             android:gravity="center_vertical|center_horizontal"
             android:layout_weight="0.25"/>
 
@@ -29,7 +29,7 @@
             android:layout_weight="0.51"
             android:gravity="center_vertical|center_horizontal"
             android:text="----"
-            android:textSize="9sp" />
+            android:textSize="10sp" />
 
         <TextView
             android:id="@+id/TPedido"
@@ -38,13 +38,13 @@
             android:layout_weight="0.12"
             android:gravity="center_vertical|center_horizontal"
             android:text="----"
-            android:textSize="10sp" />
+            android:textSize="11sp" />
         <TextView
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:text="----"
             android:id="@+id/captura"
-            android:textSize="10sp"
+            android:textSize="11sp"
             android:gravity="center_vertical|center_horizontal"
             android:layout_weight="0.12"
             />
