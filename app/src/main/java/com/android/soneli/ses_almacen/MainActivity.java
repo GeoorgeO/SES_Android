@@ -151,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
                                     Lista.setAdapter(null);
                                     Lista.setAdapter(Adapter);
 
+
                                     limpiarAgregado();
                                     existe=true;
                                     break;
@@ -218,6 +219,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        bGuardar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for(int i=0;i<arrayArticulos.size();i++){
+                    if(arrayArticulos.get(i).getTPedido()<arrayArticulos.get(i).getCaptura()){
+                        Insidencias.add(i);
+                    }
+                    if(arrayArticulos.get(i).getCaptura()<arrayArticulos.get(i).getTPedido()){
+                        Excedentes.add(i);
+                    }
+                }
+            }
+        });
+
     }
 
 
@@ -264,8 +279,8 @@ public class MainActivity extends AppCompatActivity {
                         Lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                Toast.makeText(MainActivity.this, "Clic ", Toast.LENGTH_SHORT).show();
-                                parent.getChildAt(position).setBackgroundColor(Color.BLUE);
+                                Toast.makeText(MainActivity.this, arrayArticulos.get(position).getArticuloDescripcion().toString(), Toast.LENGTH_SHORT).show();
+
                             }
                         });
 
