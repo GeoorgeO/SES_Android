@@ -7,6 +7,7 @@ package com.android.soneli.ses_almacen;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -40,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<Pedido> arrayArticulos;
     Adaptador_Tabla Adapter;
+
+    ArrayList <Integer> Insidencias;
+    ArrayList <Integer> Excedentes;
 
     ListView Lista;
 
@@ -214,16 +218,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //parent.getChildAt(position).setBackgroundColor(Color.BLUE);
-                Toast.makeText(MainActivity.this, "clic", Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-
     }
 
 
@@ -270,7 +264,8 @@ public class MainActivity extends AppCompatActivity {
                         Lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                                Toast.makeText(MainActivity.this, "Clic ", Toast.LENGTH_SHORT).show();
+                                parent.getChildAt(position).setBackgroundColor(Color.BLUE);
                             }
                         });
 
@@ -337,6 +332,8 @@ public class MainActivity extends AppCompatActivity {
                         lRecibido=(Integer.parseInt(eCajas.getText().toString()) * Integer.parseInt(ePxC.getText().toString()));
                         Articulo=new Pedido(eCodigoArt.getText().toString().replace(" ",""),"ARTICULO NUEVO",0,lRecibido);
                         arrayArticulos.add(Articulo);
+
+                        Insidencias.add(arrayArticulos.size()-1);
 
                         Lista.setAdapter(null);
                         Lista.setAdapter(Adapter);
