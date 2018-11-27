@@ -8,7 +8,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 
-import android.graphics.Color;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -62,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
 
     AlertDialog.Builder builder;
     AlertDialog.Builder baviso;
+
+    boolean sista;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Falta agregar la cantidad de cajas y la cantidad de piezas", Toast.LENGTH_SHORT).show();
                     }else{
                         boolean existe=false;
+                        boolean enarticulo=false;
                         if(rbCaptura.isChecked()){
 
 
@@ -152,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
                                     Lista.setAdapter(Adapter);
 
 
+
                                     limpiarAgregado();
                                     existe=true;
                                     break;
@@ -159,8 +163,14 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             if(existe==false){
-                                onCreateDialog("Aviso","EL codigo del articulo NO SE ENCUENTRA EN LA LISTA, ¿Deseas que se agrege como NUEVO PRODUCTO a la lista?");
-                                builder.show();
+                                revisaArticulo(eCodigoArt.getText().toString());
+                                if(sista==true){
+
+                                }else{
+                                    onCreateDialog("Aviso","EL codigo del articulo NO SE ENCUENTRA EN LA LISTA, ¿Deseas que se agrege como NUEVO PRODUCTO a la lista?");
+                                    builder.show();
+                                }
+
                             }
                         }else{
                             for(int i=0;i<arrayArticulos.size();i++){
@@ -299,6 +309,58 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void revisaArticulo(String PArticulo){
+
+
+        AsyncHttpClient cliente=new AsyncHttpClient();
+        String url = "http://sonelidesarrollo.ddns.net:8088/Pedidos/Articulo?ArticuloCodigo="+PArticulo;
+        cliente.get(url, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                if (statusCode == 200)
+                {
+                    try {
+                        int lRecibido;
+                        Pedido Articulo;
+
+
+                        JSONArray jsonArray = new JSONArray(new String(responseBody));
+
+                        if(jsonArray.length()>0){
+                            sista=true;
+                            for(int i=0;i<jsonArray.length();i++)
+                            {
+                                lRecibido=(Integer.parseInt(eCajas.getText().toString()) * Integer.parseInt(ePxC.getText().toString()));
+                                Articulo=new Pedido(jsonArray.getJSONObject(i).getString("ArticuloCodigo"),jsonArray.getJSONObject(i).getString("ArticuloDescripcion"),0,lRecibido);
+                                arrayArticulos.add(Articulo);
+                            }
+                            Excedentes.add(arrayArticulos.size()-1);
+
+                            Lista.setAdapter(null);
+                            Lista.setAdapter(Adapter);
+
+                            limpiarAgregado();
+
+                        }else{
+                            sista=false;
+                            Toast.makeText(MainActivity.this, "LLEGO AQUI", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    catch (JSONException e)
+                    {
+                        Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+
+            }
+        });
+
+    }
+
     private void inhabilitaTodo(){
         eCodigoArt.setEnabled(false);
         eCajas.setEnabled(false);
@@ -347,6 +409,7 @@ public class MainActivity extends AppCompatActivity {
                         lRecibido=(Integer.parseInt(eCajas.getText().toString()) * Integer.parseInt(ePxC.getText().toString()));
                         Articulo=new Pedido(eCodigoArt.getText().toString().replace(" ",""),"ARTICULO NUEVO",0,lRecibido);
                         arrayArticulos.add(Articulo);
+
 
                         Insidencias.add(arrayArticulos.size()-1);
 
