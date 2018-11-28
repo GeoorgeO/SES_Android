@@ -524,64 +524,23 @@ public class MainActivity extends AppCompatActivity {
                         // User clicked OK, so save the mSelectedItems results somewhere
                         // or return them to the component that opened the dialog
 
-                        if (eCodigoArt.getText().toString().replace(" ", "").equals("")) {
-                            Toast.makeText(MainActivity.this, "Falta escanear un codigo de articulo", Toast.LENGTH_SHORT).show();
-                        } else {
-                            if (eCajas.getText().toString().replace(" ", "").equals("") || ePxC.getText().toString().replace(" ", "").equals("")) {
-                                Toast.makeText(MainActivity.this, "Falta agregar la cantidad de cajas y la cantidad de piezas", Toast.LENGTH_SHORT).show();
-                            } else {
-                                boolean existe = false;
+                        int lRecibido;
+                        Pedido Articulo;
 
-                                if (rbCaptura.isChecked()) {
+                        lRecibido=(Integer.parseInt(eCajas.getText().toString()) * Integer.parseInt(ePxC.getText().toString()));
+                        Articulo=new Pedido(eCodigoArt.getText().toString().replace(" ",""),"ARTICULO NUEVO",0,lRecibido);
+                        arrayArticulos.add(Articulo);
 
-
-                                    for (int i = 0; i < arrayArticulos.size(); i++) {
-                                        if (arrayArticulos.get(i).getArticuloCodigo().toString().equals(eCodigoArt.getText().toString())) {
-                                            int lRecibido;
-                                            Pedido Articulo;
-
-                                            lRecibido = arrayArticulos.get(i).getCaptura() + (Integer.parseInt(eCajas.getText().toString()) * Integer.parseInt(ePxC.getText().toString()));
-                                            Articulo = new Pedido(arrayArticulos.get(i).getArticuloCodigo().toString(), arrayArticulos.get(i).getArticuloDescripcion().toString(), arrayArticulos.get(i).getTPedido(), lRecibido);
-                                            arrayArticulos.set(i, Articulo);
-
-                                            Lista.setAdapter(null);
-                                            Lista.setAdapter(Adapter);
-
-
-                                            limpiarAgregado();
-                                            existe = true;
-                                            break;
-                                        }
-                                    }
-
-                                    if (existe == false) {
-                                        revisaArticulo(eCodigoArt.getText().toString());
-                                    }
-                                } else {
-                                    for (int i = 0; i < arrayArticulos.size(); i++) {
-                                        if (arrayArticulos.get(i).getArticuloCodigo().toString().equals(eCodigoArt.getText().toString())) {
-                                            int lRecibido;
-                                            Pedido Articulo;
-
-                                            lRecibido = (Integer.parseInt(eCajas.getText().toString()) * Integer.parseInt(ePxC.getText().toString()));
-                                            Articulo = new Pedido(arrayArticulos.get(i).getArticuloCodigo().toString(), arrayArticulos.get(i).getArticuloDescripcion().toString(), arrayArticulos.get(i).getTPedido(), lRecibido);
-                                            arrayArticulos.set(i, Articulo);
-
-                                            Lista.setAdapter(null);
-                                            Lista.setAdapter(Adapter);
-
-                                            limpiarAgregado();
-                                            existe = true;
-                                            break;
-                                        }
-                                    }
-                                    if (existe == false) {
-                                        aviso("Aviso", "Articulo NO EXISTE para su edición, Favor de verificar.");
-                                        baviso.show();
-                                    }
-                                }
-                            }
+                        if (arrayArticulos.size()>0){
+                            Insidencias.add(arrayArticulos.size() -1);
+                        }else{
+                            Insidencias.add(arrayArticulos.size());
                         }
+
+                        Lista.setAdapter(null);
+                        Lista.setAdapter(Adapter);
+
+                        limpiarAgregado();
 
 
 
