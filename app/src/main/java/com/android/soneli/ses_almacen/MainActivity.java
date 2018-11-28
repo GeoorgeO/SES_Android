@@ -42,8 +42,10 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Pedido> arrayArticulos;
     Adaptador_Tabla Adapter;
 
-    ArrayList <Integer> Insidencias;
-    ArrayList <Integer> Excedentes;
+    ArrayList  Insidencias;
+    ArrayList  Excedentes;
+    ArrayList  Nopedidos;
+    ArrayList faltantes;
 
     ListView Lista;
 
@@ -86,6 +88,10 @@ public class MainActivity extends AppCompatActivity {
         bLimpiar=(Button) findViewById(R.id.bLimpiar);
 
         arrayArticulos=new ArrayList<Pedido>();
+        Insidencias=new ArrayList();
+        Excedentes=new ArrayList();
+        Nopedidos=new ArrayList();
+        faltantes=new ArrayList();
 
         builder = new AlertDialog.Builder(this);
         baviso = new AlertDialog.Builder(this);
@@ -131,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+
                 if(eCodigoArt.getText().toString().replace(" ","").equals("")){
                     Toast.makeText(MainActivity.this, "Falta escanear un codigo de articulo", Toast.LENGTH_SHORT).show();
                 }else{
@@ -138,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Falta agregar la cantidad de cajas y la cantidad de piezas", Toast.LENGTH_SHORT).show();
                     }else{
                         boolean existe=false;
-                        boolean enarticulo=false;
+
                         if(rbCaptura.isChecked()){
 
 
@@ -164,13 +171,6 @@ public class MainActivity extends AppCompatActivity {
 
                             if(existe==false){
                                 revisaArticulo(eCodigoArt.getText().toString());
-                                if(sista==true){
-
-                                }else{
-                                    onCreateDialog("Aviso","EL codigo del articulo NO SE ENCUENTRA EN LA LISTA, ¿Deseas que se agrege como NUEVO PRODUCTO a la lista?");
-                                    builder.show();
-                                }
-
                             }
                         }else{
                             for(int i=0;i<arrayArticulos.size();i++){
@@ -232,13 +232,47 @@ public class MainActivity extends AppCompatActivity {
         bGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                boolean continua;
                 for(int i=0;i<arrayArticulos.size();i++){
-                    if(arrayArticulos.get(i).getTPedido()<arrayArticulos.get(i).getCaptura()){
-                        Insidencias.add(i);
+                    continua=true;
+                    for(int j=0;j<Insidencias.size();j++){
+                        Toast.makeText(MainActivity.this, String.valueOf(Insidencias.get(j)), Toast.LENGTH_SHORT).show();
+                        if(Integer.parseInt(String.valueOf(Insidencias.get(j)))==i){
+                            continua=false;
+                            break;
+                        }
                     }
-                    if(arrayArticulos.get(i).getCaptura()<arrayArticulos.get(i).getTPedido()){
-                        Excedentes.add(i);
+                    for(int j=0;j<Nopedidos.size();j++){
+                        Toast.makeText(MainActivity.this, String.valueOf(Nopedidos.get(j)), Toast.LENGTH_SHORT).show();
+                        if(Integer.parseInt(String.valueOf(Nopedidos.get(j)))==i){
+                            continua=false;
+                            break;
+                        }
                     }
+                    if (continua==true){
+                        if(arrayArticulos.get(i).getCaptura()<arrayArticulos.get(i).getTPedido()){
+                            faltantes.add(i);
+                            guardarDatosPedido(eFolio.getText().toString(),arrayArticulos.get(i).ArticuloCodigo,arrayArticulos.get(i).captura);
+                        }
+                        if(arrayArticulos.get(i).getCaptura()>arrayArticulos.get(i).getTPedido()){
+                            Excedentes.add(i);
+                            guardarDatosPedido(eFolio.getText().toString(),arrayArticulos.get(i).ArticuloCodigo,arrayArticulos.get(i).TPedido);
+                        }
+                    }
+
+                }
+
+
+                for(int j=0;j<Insidencias.size();j++){
+                    guardarDatosInsidencias(eFolio.getText().toString(),arrayArticulos.get(Integer.parseInt(String.valueOf(Insidencias.get(j)))).ArticuloCodigo,arrayArticulos.get(Integer.parseInt(String.valueOf(Insidencias.get(j)))).ArticuloDescripcion,arrayArticulos.get(Integer.parseInt(String.valueOf(Insidencias.get(j)))).captura,"Articulo Nuevo");
+                }
+                for(int j=0;j<Nopedidos.size();j++){
+                    guardarDatosInsidencias(eFolio.getText().toString(),arrayArticulos.get(Integer.parseInt(String.valueOf(Insidencias.get(j)))).ArticuloCodigo,arrayArticulos.get(Integer.parseInt(String.valueOf(Insidencias.get(j)))).ArticuloDescripcion,arrayArticulos.get(Integer.parseInt(String.valueOf(Insidencias.get(j)))).captura,"Articulo No pedido");
+                }
+                for(int j=0;j<Excedentes.size();j++){
+                    int ArtExcendente;
+                    ArtExcendente=arrayArticulos.get(Integer.parseInt(String.valueOf(Insidencias.get(j)))).captura - arrayArticulos.get(Integer.parseInt(String.valueOf(Insidencias.get(j)))).getTPedido();
+                    guardarDatosInsidencias(eFolio.getText().toString(),arrayArticulos.get(Integer.parseInt(String.valueOf(Insidencias.get(j)))).ArticuloCodigo,arrayArticulos.get(Integer.parseInt(String.valueOf(Insidencias.get(j)))).ArticuloDescripcion,ArtExcendente,"Articulos Excedentes");
                 }
             }
         });
@@ -311,15 +345,18 @@ public class MainActivity extends AppCompatActivity {
 
     public void revisaArticulo(String PArticulo){
 
-
         AsyncHttpClient cliente=new AsyncHttpClient();
         String url = "http://sonelidesarrollo.ddns.net:8088/Pedidos/Articulo?ArticuloCodigo="+PArticulo;
         cliente.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+
                 if (statusCode == 200)
                 {
                     try {
+
+
+
                         int lRecibido;
                         Pedido Articulo;
 
@@ -327,14 +364,22 @@ public class MainActivity extends AppCompatActivity {
                         JSONArray jsonArray = new JSONArray(new String(responseBody));
 
                         if(jsonArray.length()>0){
-                            sista=true;
+
+                            Toast.makeText(MainActivity.this, "lo puse true"+String.valueOf(sista), Toast.LENGTH_SHORT).show();
                             for(int i=0;i<jsonArray.length();i++)
                             {
                                 lRecibido=(Integer.parseInt(eCajas.getText().toString()) * Integer.parseInt(ePxC.getText().toString()));
                                 Articulo=new Pedido(jsonArray.getJSONObject(i).getString("ArticuloCodigo"),jsonArray.getJSONObject(i).getString("ArticuloDescripcion"),0,lRecibido);
                                 arrayArticulos.add(Articulo);
                             }
-                            Excedentes.add(arrayArticulos.size()-1);
+
+                            if(arrayArticulos.size()>0){
+                                Nopedidos.add(arrayArticulos.size()-1);
+                            }else{
+                                Nopedidos.add(arrayArticulos.size());
+                            }
+
+
 
                             Lista.setAdapter(null);
                             Lista.setAdapter(Adapter);
@@ -342,8 +387,8 @@ public class MainActivity extends AppCompatActivity {
                             limpiarAgregado();
 
                         }else{
-                            sista=false;
-                            Toast.makeText(MainActivity.this, "LLEGO AQUI", Toast.LENGTH_SHORT).show();
+                            onCreateDialog("Aviso","EL codigo del articulo NO SE ENCUENTRA EN LA LISTA, ¿Deseas que se agrege como NUEVO PRODUCTO a la lista?");
+                            builder.show();
                         }
                     }
                     catch (JSONException e)
@@ -355,10 +400,86 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-
+                Toast.makeText(MainActivity.this, "Ocurrio un error", Toast.LENGTH_SHORT).show();
             }
         });
+        Toast.makeText(MainActivity.this, String.valueOf(sista), Toast.LENGTH_SHORT).show();
 
+
+    }
+
+    public void guardarDatosPedido(String pedido,String ArticuloCodigo,int Surtido){
+        AsyncHttpClient cliente2 =new AsyncHttpClient();
+        String url="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosDetallesUpdate?PedidosId="+pedido+"&ArticuloCodigo="+ArticuloCodigo+"&Surtido="+String.valueOf(Surtido);
+        cliente2.get(url, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                if (statusCode == 200) {
+                    try {
+
+                        JSONArray jsonArray = new JSONArray(new String(responseBody));
+
+                        if (jsonArray.length() > 0) {
+                            for(int i=0;i<jsonArray.length();i++)
+                            {
+                                if(jsonArray.getJSONObject(i).getString("resultado")=="true"){
+
+                                }else{
+                                    Toast.makeText(MainActivity.this, "Ocurrio un error al intentar guardar este articulo.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+
+                        }
+                    } catch (JSONException e) {
+                        Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Toast.makeText(MainActivity.this, "Fallo la conexion al servidor", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void guardarDatosInsidencias(String pedido,String ArticuloCodigo,String Descripcion,int Cantidad,String Tipo){
+        AsyncHttpClient cliente2 =new AsyncHttpClient();
+        String url="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosDetallesInsidencias?PedidosId="+pedido+"&ArticuloCodigo="+ArticuloCodigo+"&ArticuloDescripcion="+Descripcion+"&Cantidad="+String.valueOf(Cantidad)+"&Tipo="+Tipo;
+        cliente2.get(url, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                if (statusCode == 200) {
+                    try {
+
+                        JSONArray jsonArray = new JSONArray(new String(responseBody));
+
+                        if (jsonArray.length() > 0) {
+                            for(int i=0;i<jsonArray.length();i++)
+                            {
+                                if(jsonArray.getJSONObject(i).getString("resultado")=="true"){
+
+                                }else{
+                                    Toast.makeText(MainActivity.this, "Ocurrio un error al intentar guardar este articulo.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+
+                        }
+                    } catch (JSONException e) {
+                        Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Toast.makeText(MainActivity.this, "Fallo la conexion al servidor", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void inhabilitaTodo(){
@@ -403,20 +524,66 @@ public class MainActivity extends AppCompatActivity {
                         // User clicked OK, so save the mSelectedItems results somewhere
                         // or return them to the component that opened the dialog
 
-                        int lRecibido;
-                        Pedido Articulo;
+                        if (eCodigoArt.getText().toString().replace(" ", "").equals("")) {
+                            Toast.makeText(MainActivity.this, "Falta escanear un codigo de articulo", Toast.LENGTH_SHORT).show();
+                        } else {
+                            if (eCajas.getText().toString().replace(" ", "").equals("") || ePxC.getText().toString().replace(" ", "").equals("")) {
+                                Toast.makeText(MainActivity.this, "Falta agregar la cantidad de cajas y la cantidad de piezas", Toast.LENGTH_SHORT).show();
+                            } else {
+                                boolean existe = false;
 
-                        lRecibido=(Integer.parseInt(eCajas.getText().toString()) * Integer.parseInt(ePxC.getText().toString()));
-                        Articulo=new Pedido(eCodigoArt.getText().toString().replace(" ",""),"ARTICULO NUEVO",0,lRecibido);
-                        arrayArticulos.add(Articulo);
+                                if (rbCaptura.isChecked()) {
 
 
-                        Insidencias.add(arrayArticulos.size()-1);
+                                    for (int i = 0; i < arrayArticulos.size(); i++) {
+                                        if (arrayArticulos.get(i).getArticuloCodigo().toString().equals(eCodigoArt.getText().toString())) {
+                                            int lRecibido;
+                                            Pedido Articulo;
 
-                        Lista.setAdapter(null);
-                        Lista.setAdapter(Adapter);
+                                            lRecibido = arrayArticulos.get(i).getCaptura() + (Integer.parseInt(eCajas.getText().toString()) * Integer.parseInt(ePxC.getText().toString()));
+                                            Articulo = new Pedido(arrayArticulos.get(i).getArticuloCodigo().toString(), arrayArticulos.get(i).getArticuloDescripcion().toString(), arrayArticulos.get(i).getTPedido(), lRecibido);
+                                            arrayArticulos.set(i, Articulo);
 
-                        limpiarAgregado();
+                                            Lista.setAdapter(null);
+                                            Lista.setAdapter(Adapter);
+
+
+                                            limpiarAgregado();
+                                            existe = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (existe == false) {
+                                        revisaArticulo(eCodigoArt.getText().toString());
+                                    }
+                                } else {
+                                    for (int i = 0; i < arrayArticulos.size(); i++) {
+                                        if (arrayArticulos.get(i).getArticuloCodigo().toString().equals(eCodigoArt.getText().toString())) {
+                                            int lRecibido;
+                                            Pedido Articulo;
+
+                                            lRecibido = (Integer.parseInt(eCajas.getText().toString()) * Integer.parseInt(ePxC.getText().toString()));
+                                            Articulo = new Pedido(arrayArticulos.get(i).getArticuloCodigo().toString(), arrayArticulos.get(i).getArticuloDescripcion().toString(), arrayArticulos.get(i).getTPedido(), lRecibido);
+                                            arrayArticulos.set(i, Articulo);
+
+                                            Lista.setAdapter(null);
+                                            Lista.setAdapter(Adapter);
+
+                                            limpiarAgregado();
+                                            existe = true;
+                                            break;
+                                        }
+                                    }
+                                    if (existe == false) {
+                                        aviso("Aviso", "Articulo NO EXISTE para su edición, Favor de verificar.");
+                                        baviso.show();
+                                    }
+                                }
+                            }
+                        }
+
+
 
 
                     }
