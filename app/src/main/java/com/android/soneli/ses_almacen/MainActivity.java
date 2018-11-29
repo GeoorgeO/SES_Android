@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
 
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -65,6 +66,9 @@ public class MainActivity extends AppCompatActivity {
     AlertDialog.Builder builder;
     AlertDialog.Builder baviso;
 
+    TextView tFecha;
+    TextView tProveedor;
+
     boolean sista;
 
     @Override
@@ -86,6 +90,9 @@ public class MainActivity extends AppCompatActivity {
         bBuscar=(Button) findViewById(R.id.bBuscar);
         bGuardar=(Button) findViewById(R.id.bGuardar);
         bLimpiar=(Button) findViewById(R.id.bLimpiar);
+
+        tFecha=(TextView) findViewById(R.id.tFecha);
+        tProveedor=(TextView) findViewById(R.id.tProveedor);
 
         arrayArticulos=new ArrayList<Pedido>();
         Insidencias=new ArrayList();
@@ -340,6 +347,7 @@ public class MainActivity extends AppCompatActivity {
                             eCodigoArt.setEnabled(false);
                         }
 
+                        llenaproveedor(eFolio.getText().toString());
                         //llenadoaleatorio();
 
                         Lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -474,7 +482,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void guardarDatosInsidencias(String pedido,String ArticuloCodigo,String Descripcion,int Cantidad,String Tipo){
         AsyncHttpClient cliente2 =new AsyncHttpClient();
-        String url="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosDetallesInsidencias?PedidosId="+pedido+"&ArticuloCodigo="+ArticuloCodigo+"&ArticuloDescripcion="+Descripcion.replace("#","")+"&Cantidad="+String.valueOf(Cantidad)+"&Tipo="+Tipo;
+        String url="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosDetallesInsidencias?PedidosId="+pedido+"&ArticuloCodigo="+ArticuloCodigo+"&ArticuloDescripcion="+Descripcion.replaceAll("[^\\dA-Za-z]", "")+"&Cantidad="+String.valueOf(Cantidad)+"&Tipo="+Tipo;
         eCodigoArt.setText(url+"");
         cliente2.get(url, new AsyncHttpResponseHandler() {
             @Override
@@ -510,6 +518,40 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void llenaproveedor(String Pedido){
+        AsyncHttpClient cliente2 =new AsyncHttpClient();
+        String url="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosNombreProveedor?PedidosId="+Pedido;
+        cliente2.get(url, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                if (statusCode == 200) {
+                    try {
+
+                        JSONArray jsonArray = new JSONArray(new String(responseBody));
+
+                        if (jsonArray.length() > 0) {
+                            for(int i=0;i<jsonArray.length();i++)
+                            {
+                                tProveedor.setText(jsonArray.getJSONObject(i).getString("ProveedorNombre"));
+                                tFecha.setText(jsonArray.getJSONObject(i).getString("FechaInsert"));
+                            }
+
+
+                        }
+                    } catch (JSONException e) {
+                        Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [PED]", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void inhabilitaTodo(){
         eCodigoArt.setEnabled(false);
         eCajas.setEnabled(false);
@@ -535,6 +577,9 @@ public class MainActivity extends AppCompatActivity {
         inhabilitaTodo();
 
         Lista.setAdapter(null);
+
+        tProveedor.setText("");
+        tFecha.setText("");
     }
 
     private void llenadoaleatorio(){

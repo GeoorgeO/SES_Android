@@ -66,7 +66,7 @@ public class Login extends AppCompatActivity {
 
                 if (statusCode == 200)
                 {
-                    Toast.makeText(Login.this, "entro a 200", Toast.LENGTH_SHORT).show();
+
                     try {
 
                         JSONArray jsonArray = new JSONArray(new String(responseBody));
