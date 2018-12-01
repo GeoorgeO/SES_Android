@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER))
                 {
+
                     RecibaDatos(eFolio.getText().toString());
 
                     return true;
@@ -207,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }else{
                             for(int i=0;i<arrayArticulos.size();i++){
-                                if(arrayArticulos.get(i).getArticuloCodigo().toString().equals(eCodigoArt.getText().toString())){
+                                if(arrayArticulos.get(i).getArticuloCodigo().equals(eCodigoArt.getText().toString())){
                                     int lRecibido;
                                     Pedido Articulo;
 
@@ -388,8 +389,7 @@ public class MainActivity extends AppCompatActivity {
                         Lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                Toast.makeText(MainActivity.this, arrayArticulos.get(position).getArticuloDescripcion().toString(), Toast.LENGTH_SHORT).show();
-
+                                Toast.makeText(MainActivity.this, arrayArticulos.get(position).getArticuloDescripcion(), Toast.LENGTH_SHORT).show();
                             }
                         });
 
@@ -560,6 +560,14 @@ public class MainActivity extends AppCompatActivity {
                             {
                                 tProveedor.setText(jsonArray.getJSONObject(i).getString("ProveedorNombre"));
                                 tFecha.setText(jsonArray.getJSONObject(i).getString("FechaInsert"));
+
+                                if(jsonArray.getJSONObject(i).getString("PedidosSurtido")=="true"){
+                                    inhabilitaTodo();
+                                    aviso("Aviso","Pedido Bloqueado por estatus de surtido.");
+                                    baviso.show();
+                                }else{
+                                    bGuardar.setEnabled(true);
+                                }
                             }
 
 
@@ -576,6 +584,8 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [PED]", Toast.LENGTH_SHORT).show();
             }
         });
+        agregarIsidencias(eFolio.getText().toString());
+
     }
 
     public void cerrarPedido(String Pedido){
@@ -615,6 +625,55 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void agregarIsidencias(String pedido){
+        AsyncHttpClient cliente3 =new AsyncHttpClient();
+        String url="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosDetallesInsidenciasSel?PedidosId="+pedido;
+        cliente3.get(url, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                if (statusCode == 200) {
+                    try {
+
+                        Pedido Articulo;
+                        JSONArray jsonArray = new JSONArray(new String(responseBody));
+
+                        if (jsonArray.length() > 0) {
+                            for(int i=0;i<jsonArray.length();i++)
+                            {
+                                Articulo=new Pedido(jsonArray.getJSONObject(i).getString("ArticuloCodigo"),jsonArray.getJSONObject(i).getString("ArticuloDescripcion"),0,Integer.parseInt(jsonArray.getJSONObject(i).getString("Cantidad")));
+                                arrayArticulos.add(Articulo);
+
+                                if (jsonArray.getJSONObject(i).getString("Tipo").equals("Articulo No pedido")){
+                                    if(arrayArticulos.size()>0){
+                                        Nopedidos.add(arrayArticulos.size()-1);
+                                    }else{
+                                        Nopedidos.add(arrayArticulos.size());
+                                    }
+                                }else{
+                                    if (arrayArticulos.size()>0){
+                                        Insidencias.add(arrayArticulos.size() -1);
+                                    }else{
+                                        Insidencias.add(arrayArticulos.size());
+                                    }
+                                }
+
+                            }
+                            Lista.setAdapter(Adapter);
+                        }
+                    } catch (JSONException e) {
+                        Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void inhabilitaTodo(){
         eCodigoArt.setEnabled(false);
         eCajas.setEnabled(false);
@@ -622,6 +681,7 @@ public class MainActivity extends AppCompatActivity {
         rbCaptura.setEnabled(false);
         rbEdicion.setEnabled(false);
         bAgregar.setEnabled(false);
+        bGuardar.setEnabled(false);
     }
 
     private void limpiarAgregado(){
