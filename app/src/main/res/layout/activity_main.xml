@@ -331,14 +331,14 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="125dp"
+        android:layout_width="53dp"
         android:layout_height="41dp"
-android:contentDescription="Logotipo Soneli"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:contentDescription="Logotipo Soneli"
         app:layout_constraintStart_toStartOf="@+id/toolbar"
         app:layout_constraintTop_toTopOf="@+id/toolbar"
-        app:srcCompat="@drawable/ogo" />
+        app:srcCompat="@drawable/ogomini" />
 
     <TextView
         android:id="@+id/tProveedor"
