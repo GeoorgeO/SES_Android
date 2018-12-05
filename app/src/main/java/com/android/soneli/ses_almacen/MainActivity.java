@@ -9,7 +9,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 
 
-
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -496,37 +496,6 @@ public class MainActivity extends AppCompatActivity {
                             {
                                 if(jsonArray.getJSONObject(i).getString("resultado")=="true"){
 
-                                    Properties propiedades = new Properties();
-
-                                    propiedades.put("mail.smtp.host","mail.grupoalegro.com");
-                                    propiedades.put("mail.smtp.socketFactory.port","465");
-                                    propiedades.put("mail.smtp.socketFactory.class","javax.net.ssl.SSLSocketFactory");
-                                    propiedades.put("mail.smtp.auth","true");
-                                    propiedades.put("mail.smtp.port","465");
-
-                                    try{
-                                        session= Session.getDefaultInstance(propiedades, new Authenticator() {
-                                            @Override
-                                            protected PasswordAuthentication getPasswordAuthentication() {
-                                                return new PasswordAuthentication("soporte@grupoalegro.com","Opoortoporte@1%@");
-                                            }
-                                        });
-
-
-                                        if(session!=null){
-                                            Message mensaje= new MimeMessage(session);
-                                            mensaje.setFrom(new InternetAddress("soporte@grupoalegro.com"));
-                                            mensaje.setSubject("Prueba de correo android");
-                                            mensaje.setRecipients(Message.RecipientType.TO,InternetAddress.parse("geoorge191@hotmail.com"));
-                                            mensaje.setContent("Esto es una prueba de correo con google mail","text/html; charset=utf-8");
-
-                                            Transport.send(mensaje);
-                                        }else{
-                                            Toast.makeText(MainActivity.this, "sesion vacia", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }catch (Exception e){
-                                        e.printStackTrace();
-                                    }
 
                                 }else{
                                     Toast.makeText(MainActivity.this, "Ocurrio un error al intentar guardar este articulo.", Toast.LENGTH_SHORT).show();
@@ -646,6 +615,57 @@ public class MainActivity extends AppCompatActivity {
                             for(int i=0;i<jsonArray.length();i++)
                             {
                                 if(jsonArray.getJSONObject(i).getString("resultado")=="true"){
+                                    StrictMode.ThreadPolicy policy=new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                                    StrictMode.setThreadPolicy(policy);
+                                    Properties propiedades = new Properties();
+
+                                    propiedades.put("mail.smtp.host","mail.grupoalegro.com");
+                                    propiedades.put("mail.smtp.socketFactory.port","26");
+                                    //propiedades.put("mail.smtp.starttls.enable", "true");
+                                    propiedades.put("mail.smtp.mail.sender","soporte@grupoalegro.com");
+                                    //propiedades.put("mail.smtp.socketFactory.class","javax.net.ssl.SSLSocketFactory");
+                                    propiedades.put("mail.smtp.auth","true");
+                                    propiedades.put("mail.smtp.port","26");
+                                    propiedades.put("mail.smtp.user", "soporte@grupoalegro.com");
+                                    propiedades.put("mail.smtp.socketFactory.fallback", "false");
+
+                                    try{
+                                        session= Session.getDefaultInstance(propiedades, new Authenticator() {
+                                            @Override
+                                            protected PasswordAuthentication getPasswordAuthentication() {
+                                                return new PasswordAuthentication("soporte@grupoalegro.com","Opoortoporte@1%@");
+                                            }
+                                        });
+
+
+                                        if(session!=null){
+                                            /*MimeMessage message = new MimeMessage(session);
+                                            message.setFrom(new InternetAddress((String)propiedades.get("mail.smtp.mail.sender")));
+                                            message.addRecipient(Message.RecipientType.TO, new InternetAddress("geoorge191@hotmail.com"));
+                                            message.setSubject("Prueba");
+                                            message.setText("Texto");
+                                            Transport t = session.getTransport("smtp");
+                                            t.connect((String)propiedades.get("mail.smtp.user"), "Opoortoporte@1%@");
+                                            t.sendMessage(message, message.getAllRecipients());
+                                            t.close();*/
+
+                                            Message mensaje= new MimeMessage(session);
+                                            mensaje.setFrom(new InternetAddress("soporte@grupoalegro.com"));
+                                            mensaje.setSubject("Prueba de correo android");
+                                            mensaje.setRecipients(Message.RecipientType.TO,InternetAddress.parse("geoorge191@hotmail.com"));
+                                            mensaje.setContent("Esto es una prueba de correo con google mail","text/html; charset=utf-8");
+
+                                            //Transport.send(mensaje);
+                                            Transport transporte=session.getTransport("smtp");
+                                            transporte.connect("mail.grupoalegro.com",26,"soporte@grupoalegro.com","Opoortoporte@1%@");
+                                            transporte.sendMessage(mensaje,mensaje.getAllRecipients());
+                                            transporte.close();
+                                        }else{
+                                            Toast.makeText(MainActivity.this, "sesion vacia", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                    }
 
                                 }else{
                                     Toast.makeText(MainActivity.this, "Ocurrio un error al intentar cerrar el pedido.", Toast.LENGTH_SHORT).show();
