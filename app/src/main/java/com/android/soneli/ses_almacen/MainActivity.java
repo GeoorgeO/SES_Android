@@ -9,6 +9,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 
 
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -32,6 +33,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Properties;
+
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -68,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
 
     TextView tFecha;
     TextView tProveedor;
+
+    Session session;
 
     boolean sista;
 
@@ -466,7 +478,6 @@ public class MainActivity extends AppCompatActivity {
         });
         Toast.makeText(MainActivity.this, String.valueOf(sista), Toast.LENGTH_SHORT).show();
 
-
     }
 
     public void guardarDatosPedido(String pedido,String ArticuloCodigo,int Surtido){
@@ -484,6 +495,38 @@ public class MainActivity extends AppCompatActivity {
                             for(int i=0;i<jsonArray.length();i++)
                             {
                                 if(jsonArray.getJSONObject(i).getString("resultado")=="true"){
+
+                                    Properties propiedades = new Properties();
+
+                                    propiedades.put("mail.smtp.host","mail.grupoalegro.com");
+                                    propiedades.put("mail.smtp.socketFactory.port","465");
+                                    propiedades.put("mail.smtp.socketFactory.class","javax.net.ssl.SSLSocketFactory");
+                                    propiedades.put("mail.smtp.auth","true");
+                                    propiedades.put("mail.smtp.port","465");
+
+                                    try{
+                                        session= Session.getDefaultInstance(propiedades, new Authenticator() {
+                                            @Override
+                                            protected PasswordAuthentication getPasswordAuthentication() {
+                                                return new PasswordAuthentication("soporte@grupoalegro.com","Opoortoporte@1%@");
+                                            }
+                                        });
+
+
+                                        if(session!=null){
+                                            Message mensaje= new MimeMessage(session);
+                                            mensaje.setFrom(new InternetAddress("soporte@grupoalegro.com"));
+                                            mensaje.setSubject("Prueba de correo android");
+                                            mensaje.setRecipients(Message.RecipientType.TO,InternetAddress.parse("geoorge191@hotmail.com"));
+                                            mensaje.setContent("Esto es una prueba de correo con google mail","text/html; charset=utf-8");
+
+                                            Transport.send(mensaje);
+                                        }else{
+                                            Toast.makeText(MainActivity.this, "sesion vacia", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                    }
 
                                 }else{
                                     Toast.makeText(MainActivity.this, "Ocurrio un error al intentar guardar este articulo.", Toast.LENGTH_SHORT).show();
