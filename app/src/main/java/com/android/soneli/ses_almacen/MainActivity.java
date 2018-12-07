@@ -83,6 +83,12 @@ public class MainActivity extends AppCompatActivity {
 
     boolean sista;
 
+    String correo,contraseña,hostcorreo;
+    ArrayList destinatarios;
+    int puertosmtp;
+
+    ConexionInternet obj;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,6 +121,12 @@ public class MainActivity extends AppCompatActivity {
         builder = new AlertDialog.Builder(this);
         baviso = new AlertDialog.Builder(this);
 
+        destinatarios= new ArrayList();
+
+        obj = new ConexionInternet(this);
+
+
+
         inhabilitaTodo();
 
         rbCaptura.setChecked(true);
@@ -124,8 +136,13 @@ public class MainActivity extends AppCompatActivity {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER))
                 {
+                    if(obj.isConnected())
+                    {
+                        RecibaDatos(eFolio.getText().toString());
+                    }else{
+                        Toast.makeText(MainActivity.this, "Sin internet,Favor de verificar su conexión", Toast.LENGTH_SHORT).show();
+                    }
 
-                    RecibaDatos(eFolio.getText().toString());
 
                     return true;
                 }// end if.
@@ -158,101 +175,104 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+                if(obj.isConnected())
+                {
 
-                if(eCodigoArt.getText().toString().replace(" ","").equals("")){
-                    Toast.makeText(MainActivity.this, "Falta escanear un codigo de articulo", Toast.LENGTH_SHORT).show();
-                }else{
-                    if(eCajas.getText().toString().replace(" ","").equals("") || ePxC.getText().toString().replace(" ","").equals("")){
-                        Toast.makeText(MainActivity.this, "Falta agregar la cantidad de cajas y la cantidad de piezas", Toast.LENGTH_SHORT).show();
+                    if(eCodigoArt.getText().toString().replace(" ","").equals("")){
+                        Toast.makeText(MainActivity.this, "Falta escanear un codigo de articulo", Toast.LENGTH_SHORT).show();
                     }else{
-                        boolean existe=false;
-                        boolean yaestaenisidencias=false;
-                        String vTtipo="";
-
-                        if(Nopedidos.size()>0){
-                            for(int i=0;i<Nopedidos.size();i++){
-                                if(arrayArticulos.get(Integer.parseInt(String.valueOf(Nopedidos.get(i)))).getArticuloCodigo().equals(eCodigoArt.getText().toString())){
-                                    yaestaenisidencias=true;
-                                    vTtipo="Articulo No pedido";
-                                    break;
-                                }
-                            }
-                        }
-                        if(Insidencias.size()>0){
-                            for(int i=0;i<Insidencias.size();i++){
-                                if(arrayArticulos.get(Integer.parseInt(String.valueOf(Insidencias.get(i)))).getArticuloCodigo().equals(eCodigoArt.getText().toString())){
-                                    yaestaenisidencias=true;
-                                    vTtipo="Articulo Nuevo";
-                                    break;
-                                }
-                            }
-                        }
-
-                        if(rbCaptura.isChecked()){
-                            for(int i=0;i<arrayArticulos.size();i++){
-                                if(arrayArticulos.get(i).getArticuloCodigo().equals(eCodigoArt.getText().toString())){
-                                    int lRecibido;
-                                    Pedido Articulo;
-
-                                    lRecibido=arrayArticulos.get(i).getCaptura() + (Integer.parseInt(eCajas.getText().toString()) * Integer.parseInt(ePxC.getText().toString()));
-                                    Articulo=new Pedido(arrayArticulos.get(i).getArticuloCodigo().toString(),arrayArticulos.get(i).getArticuloDescripcion().toString(),arrayArticulos.get(i).getTPedido(),lRecibido);
-                                    arrayArticulos.set(i,Articulo);
-
-                                    Lista.setAdapter(null);
-                                    Lista.setAdapter(Adapter);
-
-                                    if (yaestaenisidencias==true){
-                                        guardarDatosInsidencias(eFolio.getText().toString().replace(" ",""), arrayArticulos.get(i).ArticuloCodigo, arrayArticulos.get(i).ArticuloDescripcion, lRecibido, vTtipo);
-
-                                    }else{
-                                        guardarDatosPedido(eFolio.getText().toString(),arrayArticulos.get(i).getArticuloCodigo(),lRecibido);
-                                    }
-
-
-                                    limpiarAgregado();
-                                    existe=true;
-                                    break;
-                                }
-                            }
-
-                            if(existe==false){
-                                revisaArticulo(eCodigoArt.getText().toString());
-                            }
+                        if(eCajas.getText().toString().replace(" ","").equals("") || ePxC.getText().toString().replace(" ","").equals("")){
+                            Toast.makeText(MainActivity.this, "Falta agregar la cantidad de cajas y la cantidad de piezas", Toast.LENGTH_SHORT).show();
                         }else{
-                            for(int i=0;i<arrayArticulos.size();i++){
-                                if(arrayArticulos.get(i).getArticuloCodigo().equals(eCodigoArt.getText().toString())){
-                                    int lRecibido;
-                                    Pedido Articulo;
+                            boolean existe=false;
+                            boolean yaestaenisidencias=false;
+                            String vTtipo="";
 
-                                    lRecibido=(Integer.parseInt(eCajas.getText().toString()) * Integer.parseInt(ePxC.getText().toString()));
-                                    Articulo=new Pedido(arrayArticulos.get(i).getArticuloCodigo().toString(),arrayArticulos.get(i).getArticuloDescripcion().toString(),arrayArticulos.get(i).getTPedido(),lRecibido);
-                                    arrayArticulos.set(i,Articulo);
-
-                                    Lista.setAdapter(null);
-                                    Lista.setAdapter(Adapter);
-
-                                    if (yaestaenisidencias==true){
-                                        guardarDatosInsidencias(eFolio.getText().toString().replace(" ",""), arrayArticulos.get(i).ArticuloCodigo, arrayArticulos.get(i).ArticuloDescripcion, lRecibido, vTtipo);
-
-                                    }else{
-                                        guardarDatosPedido(eFolio.getText().toString(),arrayArticulos.get(i).getArticuloCodigo(),lRecibido);
+                            if(Nopedidos.size()>0){
+                                for(int i=0;i<Nopedidos.size();i++){
+                                    if(arrayArticulos.get(Integer.parseInt(String.valueOf(Nopedidos.get(i)))).getArticuloCodigo().equals(eCodigoArt.getText().toString())){
+                                        yaestaenisidencias=true;
+                                        vTtipo="Articulo No pedido";
+                                        break;
                                     }
-
-                                    limpiarAgregado();
-                                    existe=true;
-                                    break;
                                 }
                             }
-                            if(existe==false){
-                                aviso("Aviso","Articulo NO EXISTE para su edición, Favor de verificar.");
-                                baviso.show();
+                            if(Insidencias.size()>0){
+                                for(int i=0;i<Insidencias.size();i++){
+                                    if(arrayArticulos.get(Integer.parseInt(String.valueOf(Insidencias.get(i)))).getArticuloCodigo().equals(eCodigoArt.getText().toString())){
+                                        yaestaenisidencias=true;
+                                        vTtipo="Articulo Nuevo";
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if(rbCaptura.isChecked()){
+                                for(int i=0;i<arrayArticulos.size();i++){
+                                    if(arrayArticulos.get(i).getArticuloCodigo().equals(eCodigoArt.getText().toString())){
+                                        int lRecibido;
+                                        Pedido Articulo;
+
+                                        lRecibido=arrayArticulos.get(i).getCaptura() + (Integer.parseInt(eCajas.getText().toString()) * Integer.parseInt(ePxC.getText().toString()));
+                                        Articulo=new Pedido(arrayArticulos.get(i).getArticuloCodigo().toString(),arrayArticulos.get(i).getArticuloDescripcion().toString(),arrayArticulos.get(i).getTPedido(),lRecibido);
+                                        arrayArticulos.set(i,Articulo);
+
+                                        Lista.setAdapter(null);
+                                        Lista.setAdapter(Adapter);
+
+                                        if (yaestaenisidencias==true){
+                                            guardarDatosInsidencias(eFolio.getText().toString().replace(" ",""), arrayArticulos.get(i).ArticuloCodigo, arrayArticulos.get(i).ArticuloDescripcion, lRecibido, vTtipo);
+
+                                        }else{
+                                            guardarDatosPedido(eFolio.getText().toString(),arrayArticulos.get(i).getArticuloCodigo(),lRecibido);
+                                        }
+
+
+                                        limpiarAgregado();
+                                        existe=true;
+                                        break;
+                                    }
+                                }
+
+                                if(existe==false){
+                                    revisaArticulo(eCodigoArt.getText().toString());
+                                }
+                            }else{
+                                for(int i=0;i<arrayArticulos.size();i++){
+                                    if(arrayArticulos.get(i).getArticuloCodigo().equals(eCodigoArt.getText().toString())){
+                                        int lRecibido;
+                                        Pedido Articulo;
+
+                                        lRecibido=(Integer.parseInt(eCajas.getText().toString()) * Integer.parseInt(ePxC.getText().toString()));
+                                        Articulo=new Pedido(arrayArticulos.get(i).getArticuloCodigo().toString(),arrayArticulos.get(i).getArticuloDescripcion().toString(),arrayArticulos.get(i).getTPedido(),lRecibido);
+                                        arrayArticulos.set(i,Articulo);
+
+                                        Lista.setAdapter(null);
+                                        Lista.setAdapter(Adapter);
+
+                                        if (yaestaenisidencias==true){
+                                            guardarDatosInsidencias(eFolio.getText().toString().replace(" ",""), arrayArticulos.get(i).ArticuloCodigo, arrayArticulos.get(i).ArticuloDescripcion, lRecibido, vTtipo);
+
+                                        }else{
+                                            guardarDatosPedido(eFolio.getText().toString(),arrayArticulos.get(i).getArticuloCodigo(),lRecibido);
+                                        }
+
+                                        limpiarAgregado();
+                                        existe=true;
+                                        break;
+                                    }
+                                }
+                                if(existe==false){
+                                    aviso("Aviso","Articulo NO EXISTE para su edición, Favor de verificar.");
+                                    baviso.show();
+                                }
                             }
                         }
                     }
+
+                }else{
+                    Toast.makeText(MainActivity.this, "Sin internet,Favor de verificar su conexión", Toast.LENGTH_SHORT).show();
                 }
-
-
-
 
             }
         });
@@ -260,6 +280,7 @@ public class MainActivity extends AppCompatActivity {
         bLimpiar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 limpiarTodo();
             }
         });
@@ -285,11 +306,17 @@ public class MainActivity extends AppCompatActivity {
         bGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cerrarPedido(eFolio.getText().toString());
-                aviso("Aviso","Pedido cerrado");
-                baviso.show();
-                limpiarTodo();
-                Lista.setAdapter(null);
+                if(obj.isConnected())
+                {
+                    cerrarPedido(eFolio.getText().toString());
+                    aviso("Aviso","Pedido cerrado");
+                    baviso.show();
+                    limpiarTodo();
+                    Lista.setAdapter(null);
+                }else{
+                    Toast.makeText(MainActivity.this, "Sin internet,Favor de verificar su conexión", Toast.LENGTH_SHORT).show();
+                }
+
                 /*
 
                 boolean continua;
@@ -619,37 +646,37 @@ public class MainActivity extends AppCompatActivity {
                                     StrictMode.setThreadPolicy(policy);
                                     Properties propiedades = new Properties();
 
-                                    propiedades.put("mail.smtp.host","mail.grupoalegro.com");
-                                    propiedades.put("mail.smtp.socketFactory.port","26");
+                                    propiedades.put("mail.smtp.host",hostcorreo);
+                                    propiedades.put("mail.smtp.socketFactory.port",String.valueOf(puertosmtp));
                                     //propiedades.put("mail.smtp.starttls.enable", "true");
-                                    propiedades.put("mail.smtp.mail.sender","soporte@grupoalegro.com");
+                                    propiedades.put("mail.smtp.mail.sender",correo);
                                     //propiedades.put("mail.smtp.socketFactory.class","javax.net.ssl.SSLSocketFactory");
                                     propiedades.put("mail.smtp.auth","true");
-                                    propiedades.put("mail.smtp.port","26");
-                                    propiedades.put("mail.smtp.user", "soporte@grupoalegro.com");
+                                    propiedades.put("mail.smtp.port",String.valueOf(puertosmtp));
+                                    propiedades.put("mail.smtp.user", correo);
                                     propiedades.put("mail.smtp.socketFactory.fallback", "false");
 
                                     try{
                                         session= Session.getDefaultInstance(propiedades, new Authenticator() {
                                             @Override
                                             protected PasswordAuthentication getPasswordAuthentication() {
-                                                return new PasswordAuthentication("soporte@grupoalegro.com","Opoortoporte@1%@");
+                                                return new PasswordAuthentication(correo,contraseña);
                                             }
                                         });
 
 
                                         if(session!=null){
-                                            /*MimeMessage message = new MimeMessage(session);
+                                            MimeMessage message = new MimeMessage(session);
                                             message.setFrom(new InternetAddress((String)propiedades.get("mail.smtp.mail.sender")));
                                             message.addRecipient(Message.RecipientType.TO, new InternetAddress("geoorge191@hotmail.com"));
                                             message.setSubject("Prueba");
                                             message.setText("Texto");
                                             Transport t = session.getTransport("smtp");
-                                            t.connect((String)propiedades.get("mail.smtp.user"), "Opoortoporte@1%@");
+                                            t.connect((String)propiedades.get("mail.smtp.user"), contraseña);
                                             t.sendMessage(message, message.getAllRecipients());
-                                            t.close();*/
+                                            t.close();
 
-                                            Message mensaje= new MimeMessage(session);
+                                            /*Message mensaje= new MimeMessage(session);
                                             mensaje.setFrom(new InternetAddress("soporte@grupoalegro.com"));
                                             mensaje.setSubject("Prueba de correo android");
                                             mensaje.setRecipients(Message.RecipientType.TO,InternetAddress.parse("geoorge191@hotmail.com"));
@@ -659,7 +686,7 @@ public class MainActivity extends AppCompatActivity {
                                             Transport transporte=session.getTransport("smtp");
                                             transporte.connect("mail.grupoalegro.com",26,"soporte@grupoalegro.com","Opoortoporte@1%@");
                                             transporte.sendMessage(mensaje,mensaje.getAllRecipients());
-                                            transporte.close();
+                                            transporte.close();*/
                                         }else{
                                             Toast.makeText(MainActivity.this, "sesion vacia", Toast.LENGTH_SHORT).show();
                                         }

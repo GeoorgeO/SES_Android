@@ -28,6 +28,8 @@ public class Login extends AppCompatActivity {
 
     String vUsuario;
 
+    ConexionInternet obj;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,9 +42,16 @@ public class Login extends AppCompatActivity {
         bIngresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                validarusu();
+                if(obj.isConnected())
+                {
+                    validarusu();
+                }else{
+                    Toast.makeText(Login.this, "Conexión sin internet,Favor de verificar.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
+        obj = new ConexionInternet(this);
     }
 
     public void validarusu(){
