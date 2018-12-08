@@ -133,7 +133,7 @@
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:layout_weight="0.18"
-            android:text="Cajas::"
+            android:text="Cajas:"
             android:padding="2dp"/>
 
         <EditText

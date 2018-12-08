@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".seleccionarpedido">
+
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1"
+        >
+
+        <LinearLayout
+            android:id="@+id/liner1l"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="1dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:minHeight="30dp"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            android:layout_weight="0.04"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <TextView
+                android:id="@+id/tpedidol"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.22"
+                android:background="@color/colorPrimaryDark"
+                android:text="N°Pedido"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="15sp" />
+            <TextView
+                android:id="@+id/tproveedornombrel"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.46"
+                android:background="@color/colorPrimaryDark"
+                android:text="Proveedor"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="15sp" />
+            <TextView
+                android:id="@+id/tfechainsertl"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.16"
+                android:background="@color/colorPrimaryDark"
+                android:text="Fecha"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="15sp" />
+            <TextView
+                android:id="@+id/tstatusl"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.16"
+                android:background="@color/colorPrimaryDark"
+                android:text="Status"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="15sp" />
+        </LinearLayout>
+        <ListView
+            android:id="@+id/Listapedidos"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_weight="0.89"></ListView>
+    <LinearLayout
+        android:id="@+id/liner2l"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+
+        android:gravity="center_vertical|center_horizontal"
+        android:minHeight="30dp"
+        android:orientation="horizontal"
+        android:weightSum="1"
+        android:layout_weight="0.07"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/baceptarl"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:text="Aceptar"
+            android:textSize="11sp"
+            android:layout_weight="0.26"/>
+        <Button
+            android:id="@+id/bcancelarl"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:text="Cancelar"
+            android:textSize="11sp"
+            android:layout_weight="0.26"/>
+
+    </LinearLayout>
+
+    </LinearLayout>
+
+
+
+</android.support.constraint.ConstraintLayout>

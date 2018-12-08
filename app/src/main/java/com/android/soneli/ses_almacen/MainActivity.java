@@ -9,6 +9,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 
 
+import android.content.Intent;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -168,6 +169,14 @@ public class MainActivity extends AppCompatActivity {
                 }// end if.
 
                 return false;
+            }
+        });
+
+        bBuscar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent pedidos = new Intent(getApplicationContext(), seleccionarpedido.class);
+                startActivity(pedidos);
             }
         });
 
