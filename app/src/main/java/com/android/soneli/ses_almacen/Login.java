@@ -72,6 +72,7 @@ public class Login extends AppCompatActivity {
                                 vUsuario=jsonArray.getJSONObject(i).getString("UsuariosLogin");
                                 Intent principal = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(principal);
+                                finish();
                             }
                         }else{
                             Toast.makeText(Login.this, "Usuario o contraseña incorrecta.", Toast.LENGTH_SHORT).show();

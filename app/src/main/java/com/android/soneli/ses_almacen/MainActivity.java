@@ -177,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent pedidos = new Intent(getApplicationContext(), seleccionarpedido.class);
                 startActivity(pedidos);
+                finish();
             }
         });
 
@@ -390,6 +391,16 @@ public class MainActivity extends AppCompatActivity {
 */
             }
         });
+
+    }
+
+    protected void onStart(){
+        super.onStart();
+        Bundle parametros = this.getIntent().getExtras();
+        if(parametros !=null){
+            Toast.makeText(MainActivity.this, getIntent().getExtras().getString("NumeroPedido"), Toast.LENGTH_SHORT).show();
+        }
+
 
     }
 

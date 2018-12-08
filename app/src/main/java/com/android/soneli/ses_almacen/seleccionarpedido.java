@@ -102,8 +102,11 @@ public class seleccionarpedido extends AppCompatActivity {
                                     if(cliks==2){
                                         Toast.makeText(seleccionarpedido.this, "dos clic", Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(seleccionarpedido.this, MainActivity.class);
+                                        intent.removeExtra("NumeroPedido");
                                         intent.putExtra("NumeroPedido", arrayPedidos.get(position).getPedidosid());
                                         startActivity(intent);
+
+                                        finish();
                                     }
                                 }else{
                                     cliks=1;
