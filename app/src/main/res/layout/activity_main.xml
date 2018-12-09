@@ -7,358 +7,357 @@
     tools:context=".MainActivity"
     >
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:minHeight="?attr/actionBarSize"
-        android:background="@color/colorPrimaryDark"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-
-    </android.support.v7.widget.Toolbar>
-
     <LinearLayout
-        android:id="@+id/liner1"
         android:layout_width="match_parent"
-        android:layout_height="32dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center_vertical|center_horizontal"
-        android:minHeight="30dp"
-        android:orientation="horizontal"
-        android:weightSum="1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
-
-        <TextView
-            android:id="@+id/tFolio"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-
-            android:layout_weight="0.18"
-            android:padding="2dp"
-            android:text="Folio:" />
-
-        <EditText
-            android:id="@+id/eFolio"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.22"
-            android:ems="10"
-            android:hint="Esc.Folio"
-            android:inputType="number"
-            android:padding="2dp"
-            android:textAlignment="center" />
-
-        <TextView
-            android:id="@+id/tblanco3"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.23"
-            android:text=""
-            android:padding="2dp"/>
-
-        <Button
-            android:id="@+id/bBuscar"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.35"
-            android:padding="2dp"
-            android:text="Buscar" />
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/liner2"
-        android:layout_width="match_parent"
-
-        android:layout_height="30dp"
-        android:layout_marginTop="5dp"
-        android:gravity="center_vertical|center_horizontal"
-        android:minHeight="30dp"
-        android:orientation="horizontal"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
         android:weightSum="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/liner1">
+        app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tCodigoArt"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.18"
-            android:padding="2dp"
-            android:text="Codigo:" />
-
-        <EditText
-            android:id="@+id/eCodigoArt"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.45"
-            android:ems="10"
-            android:hint="Escanea el codigo"
-            android:inputType="textPersonName"
-            android:padding="2dp"
-            android:text="" />
-
-        <RadioButton
-            android:id="@+id/rbCptura"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.35"
-            android:padding="2dp"
-            android:text="Captura" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/liner3"
-        android:layout_width="match_parent"
-
-        android:layout_height="30dp"
-        android:layout_marginTop="5dp"
-        android:gravity="center_vertical|center_horizontal"
-        android:minHeight="30dp"
-        android:orientation="horizontal"
-        android:weightSum="1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/liner2">
-
-        <TextView
-            android:id="@+id/tCaja"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.18"
-            android:text="Cajas:"
-            android:padding="2dp"/>
-
-        <EditText
-            android:id="@+id/eCaja"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:padding="2dp"
-            android:layout_weight="0.22"
-            android:ems="10"
-            android:inputType="number"
-            android:text=""
-            android:textAlignment="center"
-            android:hint="N° Cajas"
-            />
-
-        <TextView
-            android:id="@+id/tblanco"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.23"
-            android:text=""
-            android:padding="2dp"/>
-
-        <RadioButton
-            android:id="@+id/rbEdicion"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.35"
-            android:padding="2dp"
-            android:text="Edición" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/liner4"
-        android:layout_width="match_parent"
-
-        android:layout_height="30dp"
-        android:layout_marginTop="5dp"
-        android:gravity="center_vertical|center_horizontal"
-        android:minHeight="30dp"
-        android:orientation="horizontal"
-        android:weightSum="1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/liner3">
-
-        <TextView
-            android:id="@+id/tPxC"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-
-            android:layout_weight="0.18"
-            android:padding="2dp"
-            android:text="Pza Caja:" />
-
-        <EditText
-            android:id="@+id/ePxC"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.22"
-            android:ems="10"
-            android:hint="P x Caja"
-            android:inputType="number"
-            android:textAlignment="center"
-            android:padding="2dp" />
-
-        <TextView
-            android:id="@+id/tBlanco2"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-
-            android:layout_weight="0.23"
-            android:padding="2dp"
-            android:text="" />
-
-        <Button
-            android:id="@+id/bagregar"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.35"
-            android:padding="2dp"
-            android:text="Agregar" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/liner5"
-        android:layout_width="match_parent"
-
-        android:layout_height="15dp"
-        android:layout_marginTop="5dp"
-        android:gravity="center_vertical|center_horizontal"
-        android:minHeight="30dp"
-        android:orientation="horizontal"
-        android:weightSum="1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/liner4">
-
-        <TextView
-            android:id="@+id/tArticuloCodigo"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.25"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/colorPrimaryDark"
-            android:text="Codigo"
-            android:textAlignment="center"
-            android:textColor="@android:color/white"
-            android:textSize="10sp" />
+            android:minHeight="?attr/actionBarSize"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tArticulodescripcion"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.51"
-            android:background="@color/colorPrimaryDark"
-            android:text="Articulo"
-            android:textAlignment="center"
-            android:textColor="@android:color/white"
-            android:textSize="10sp" />
 
-        <TextView
-            android:id="@+id/tTPedido"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="53dp"
+                android:layout_height="41dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:contentDescription="Logotipo Soneli"
+                app:layout_constraintStart_toStartOf="@+id/toolbar"
+                app:layout_constraintTop_toTopOf="@+id/toolbar"
+                app:srcCompat="@drawable/ogomini" />
 
-            android:layout_weight="0.12"
-            android:background="@color/colorPrimaryDark"
-            android:text="Pedido"
-            android:textAlignment="center"
-            android:textColor="@android:color/white"
-            android:textSize="10sp"
-            app:layout_constraintStart_toEndOf="@+id/tArticulodescripcion" />
+            <TextView
+                android:id="@+id/tProveedor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:textColor="@android:color/white"
+                app:layout_constraintStart_toEndOf="@+id/imageView"
+                app:layout_constraintTop_toTopOf="@+id/toolbar" />
 
-        <TextView
-            android:id="@+id/tCaptura"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.12"
-            android:background="@color/colorPrimaryDark"
-            android:text="Recibido"
-            android:textAlignment="center"
-            android:textColor="@android:color/white"
-            android:textSize="10sp" />
+            <TextView
+                android:id="@+id/tFecha"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+        </android.support.v7.widget.Toolbar>
+
+
+        <LinearLayout
+            android:id="@+id/liner1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="0dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:minHeight="30dp"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            android:layout_weight="0.07"
+            >
+
+            <TextView
+                android:id="@+id/tFolio"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+
+                android:layout_weight="0.18"
+                android:padding="2dp"
+                android:text="Folio:" />
+
+            <EditText
+                android:id="@+id/eFolio"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.22"
+                android:ems="10"
+                android:hint="Esc.Folio"
+                android:inputType="number"
+                android:padding="2dp"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/tblanco3"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.23"
+                android:padding="2dp"
+                android:text="" />
+
+            <Button
+                android:id="@+id/bBuscar"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.35"
+                android:padding="2dp"
+                android:text="Buscar" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/liner2"
+            android:layout_width="match_parent"
+
+            android:layout_height="1dp"
+            android:layout_marginTop="0dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:minHeight="30dp"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            android:layout_weight="0.07">
+
+            <TextView
+                android:id="@+id/tCodigoArt"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.18"
+                android:padding="2dp"
+                android:text="Codigo:" />
+
+            <EditText
+                android:id="@+id/eCodigoArt"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.45"
+                android:ems="10"
+                android:hint="Escanea el codigo"
+                android:inputType="textPersonName"
+                android:padding="2dp"
+                android:text="" />
+
+            <RadioButton
+                android:id="@+id/rbCptura"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.35"
+                android:padding="2dp"
+                android:text="Captura" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/liner3"
+            android:layout_width="match_parent"
+
+            android:layout_height="1dp"
+            android:layout_marginTop="0dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:minHeight="30dp"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            android:layout_weight="0.07">
+
+            <TextView
+                android:id="@+id/tCaja"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.18"
+                android:padding="2dp"
+                android:text="Cajas:" />
+
+            <EditText
+                android:id="@+id/eCaja"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.22"
+                android:ems="10"
+                android:hint="N° Cajas"
+                android:inputType="number"
+                android:padding="2dp"
+                android:text=""
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/tblanco"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.23"
+                android:padding="2dp"
+                android:text="" />
+
+            <RadioButton
+                android:id="@+id/rbEdicion"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.35"
+                android:padding="2dp"
+                android:text="Edición" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/liner4"
+            android:layout_width="match_parent"
+
+            android:layout_height="1dp"
+            android:layout_marginTop="0dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:minHeight="30dp"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            android:layout_weight="0.07">
+
+            <TextView
+                android:id="@+id/tPxC"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+
+                android:layout_weight="0.18"
+                android:padding="2dp"
+                android:text="Pza Caja:" />
+
+            <EditText
+                android:id="@+id/ePxC"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.22"
+                android:ems="10"
+                android:hint="P x Caja"
+                android:inputType="number"
+                android:padding="2dp"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/tBlanco2"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+
+                android:layout_weight="0.23"
+                android:padding="2dp"
+                android:text="" />
+
+            <Button
+                android:id="@+id/bagregar"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.35"
+                android:padding="2dp"
+                android:text="Agregar" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/liner5"
+            android:layout_width="match_parent"
+
+            android:layout_height="1dp"
+            android:layout_marginTop="0dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:minHeight="30dp"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            android:layout_weight="0.03">
+
+            <TextView
+                android:id="@+id/tArticuloCodigo"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.25"
+                android:background="@color/colorPrimaryDark"
+                android:text="Codigo"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/tArticulodescripcion"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.51"
+                android:background="@color/colorPrimaryDark"
+                android:text="Articulo"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/tTPedido"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+
+                android:layout_weight="0.12"
+                android:background="@color/colorPrimaryDark"
+                android:text="Pedido"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="10sp"
+                app:layout_constraintStart_toEndOf="@+id/tArticulodescripcion" />
+
+            <TextView
+                android:id="@+id/tCaptura"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.12"
+                android:background="@color/colorPrimaryDark"
+                android:text="Recibido"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/ListAticulos"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:padding="0dp"
+
+            android:layout_weight="0.62"/>
+
+        <LinearLayout
+            android:id="@+id/linerF"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="4dp"
+            android:gravity="center_vertical|center_horizontal"
+            android:minHeight="30dp"
+            android:orientation="horizontal"
+            android:weightSum="1"
+           android:layout_weight="0.07">
+
+            <Button
+                android:id="@+id/bLimpiar"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.25"
+                android:text="Limpiar" />
+
+            <TextView
+                android:id="@+id/tblanco4"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.40"
+                android:text="" />
+
+            <Button
+                android:id="@+id/bGuardar"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.25"
+                android:text="Guardar" />
+        </LinearLayout>
+
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/ListAticulos"
-        android:layout_width="match_parent"
-        android:layout_height="298dp"
-        android:padding="1dp"
 
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/liner5" />
-
-    <LinearLayout
-        android:id="@+id/linerF"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_marginBottom="4dp"
-        android:gravity="center_vertical|center_horizontal"
-        android:minHeight="30dp"
-        android:orientation="horizontal"
-        android:weightSum="1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <Button
-            android:id="@+id/bLimpiar"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.25"
-            android:text="Limpiar" />
-
-        <TextView
-            android:id="@+id/tblanco4"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.40"
-            android:text="" />
-
-        <Button
-            android:id="@+id/bGuardar"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.25"
-            android:text="Guardar" />
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="53dp"
-        android:layout_height="41dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:contentDescription="Logotipo Soneli"
-        app:layout_constraintStart_toStartOf="@+id/toolbar"
-        app:layout_constraintTop_toTopOf="@+id/toolbar"
-        app:srcCompat="@drawable/ogomini" />
-
-    <TextView
-        android:id="@+id/tProveedor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:textColor="@android:color/white"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/toolbar" />
-
-    <TextView
-        android:id="@+id/tFecha"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textColor="@android:color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

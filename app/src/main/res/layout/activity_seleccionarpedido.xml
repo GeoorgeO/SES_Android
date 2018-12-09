@@ -89,13 +89,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <Button
-            android:id="@+id/baceptarl"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:text="Aceptar"
-            android:textSize="11sp"
-            android:layout_weight="0.26"/>
+
         <Button
             android:id="@+id/bcancelarl"
             android:layout_width="1dp"

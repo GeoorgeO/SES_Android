@@ -22,7 +22,7 @@ import cz.msebera.android.httpclient.Header;
 public class seleccionarpedido extends AppCompatActivity {
 
     ListView Listapedidos;
-    Button baceptarl;
+
     Button bcancelarl;
 
     ArrayList<listapedidos> arrayPedidos;
@@ -38,7 +38,7 @@ public class seleccionarpedido extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seleccionarpedido);
         Listapedidos= (ListView) findViewById(R.id.Listapedidos);
-        baceptarl=(Button) findViewById(R.id.baceptarl);
+
         bcancelarl=(Button) findViewById(R.id.bcancelarl);
 
         arrayPedidos=new ArrayList<listapedidos>();
@@ -53,6 +53,15 @@ public class seleccionarpedido extends AppCompatActivity {
         }else{
             Toast.makeText(seleccionarpedido.this, "Sin internet,Favor de verificar su conexión", Toast.LENGTH_SHORT).show();
         }
+
+        bcancelarl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+
 
     }
 
@@ -100,7 +109,6 @@ public class seleccionarpedido extends AppCompatActivity {
                                 cliks++;
                                 if(vpedido.equals(arrayPedidos.get(position).getPedidosid())){
                                     if(cliks==2){
-                                        Toast.makeText(seleccionarpedido.this, "dos clic", Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(seleccionarpedido.this, MainActivity.class);
                                         intent.removeExtra("NumeroPedido");
                                         intent.putExtra("NumeroPedido", arrayPedidos.get(position).getPedidosid());

@@ -90,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
 
     ConexionInternet obj;
 
+    AsyncHttpClient clienteweb =new AsyncHttpClient();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -175,9 +177,15 @@ public class MainActivity extends AppCompatActivity {
         bBuscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent pedidos = new Intent(getApplicationContext(), seleccionarpedido.class);
-                startActivity(pedidos);
-                finish();
+                if(obj.isConnected())
+                {
+                    Intent pedidos = new Intent(getApplicationContext(), seleccionarpedido.class);
+                    startActivity(pedidos);
+                    finish();
+                }else{
+                    Toast.makeText(MainActivity.this, "Sin internet,Favor de verificar su conexión", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
@@ -398,9 +406,88 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         Bundle parametros = this.getIntent().getExtras();
         if(parametros !=null){
-            Toast.makeText(MainActivity.this, getIntent().getExtras().getString("NumeroPedido"), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(MainActivity.this, getIntent().getExtras().getString("NumeroPedido"), Toast.LENGTH_SHORT).show();
+            eFolio.setText(getIntent().getExtras().getString("NumeroPedido"));
+            if(obj.isConnected())
+            {
+                RecibaDatos(eFolio.getText().toString());
+            }else{
+                Toast.makeText(MainActivity.this, "Sin internet,Favor de verificar su conexión", Toast.LENGTH_SHORT).show();
+            }
         }
 
+
+    }
+
+    public void configuracorreo(){
+        //AsyncHttpClient cliente2 =new AsyncHttpClient();
+        String url="http://sonelidesarrollo.ddns.net:8088/Email/CuentaEmail";
+        clienteweb.get(url, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                if (statusCode == 200) {
+                    try {
+
+                        JSONArray jsonArray = new JSONArray(new String(responseBody));
+
+                        if (jsonArray.length() > 0) {
+                            for(int i=0;i<jsonArray.length();i++)
+                            {
+                                hostcorreo=jsonArray.getJSONObject(i).getString("CorreoServidorSalida");
+                                correo=jsonArray.getJSONObject(i).getString("CorreoRemitente");
+                                puertosmtp=Integer.parseInt(jsonArray.getJSONObject(i).getString("CorreoPuertoSalida"));
+                                contraseña=jsonArray.getJSONObject(i).getString("CorreoContrasenia");
+                            }
+
+
+                        }
+                    } catch (JSONException e) {
+                        Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [PED]", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    public void destinatarioscorreo(){
+        //AsyncHttpClient cliente2 =new AsyncHttpClient();
+        String url="http://sonelidesarrollo.ddns.net:8088/Email/DestinoEmail";
+        clienteweb.get(url, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                if (statusCode == 200) {
+                    try {
+
+                        JSONArray jsonArray = new JSONArray(new String(responseBody));
+
+                        if (jsonArray.length() > 0) {
+                            for(int i=0;i<jsonArray.length();i++)
+                            {
+                                destinatarios.add(jsonArray.getJSONObject(i).getString("CorreoNombre"));
+
+                            }
+
+
+                        }
+                    } catch (JSONException e) {
+                        Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [PED]", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
@@ -469,9 +556,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void revisaArticulo(String PArticulo){
 
-        AsyncHttpClient cliente=new AsyncHttpClient();
+        //AsyncHttpClient cliente=new AsyncHttpClient();
         String url = "http://sonelidesarrollo.ddns.net:8088/Pedidos/Articulo?ArticuloCodigo="+PArticulo;
-        cliente.get(url, new AsyncHttpResponseHandler() {
+        clienteweb.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 
@@ -528,9 +615,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void guardarDatosPedido(String pedido,String ArticuloCodigo,int Surtido){
-        AsyncHttpClient cliente2 =new AsyncHttpClient();
+        //AsyncHttpClient cliente2 =new AsyncHttpClient();
         String url="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosDetallesUpdate?PedidosId="+pedido+"&ArticuloCodigo="+ArticuloCodigo+"&Surtido="+String.valueOf(Surtido);
-        cliente2.get(url, new AsyncHttpResponseHandler() {
+        clienteweb.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 if (statusCode == 200) {
@@ -566,10 +653,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void guardarDatosInsidencias(String pedido,String ArticuloCodigo,String Descripcion,int Cantidad,String Tipo){
-        AsyncHttpClient cliente2 =new AsyncHttpClient();
+        //AsyncHttpClient cliente2 =new AsyncHttpClient();
         String url="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosDetallesInsidencias?PedidosId="+pedido+"&ArticuloCodigo="+ArticuloCodigo+"&ArticuloDescripcion="+Descripcion.replaceAll("[^\\dA-Za-z\\s]", "")+"&Cantidad="+String.valueOf(Cantidad)+"&Tipo="+Tipo;
 
-        cliente2.get(url, new AsyncHttpResponseHandler() {
+        clienteweb.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 if (statusCode == 200) {
@@ -604,9 +691,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void llenaproveedor(String Pedido){
-        AsyncHttpClient cliente2 =new AsyncHttpClient();
+        //AsyncHttpClient cliente2 =new AsyncHttpClient();
         String url="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosNombreProveedor?PedidosId="+Pedido;
-        cliente2.get(url, new AsyncHttpResponseHandler() {
+        clienteweb.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 if (statusCode == 200) {
@@ -648,9 +735,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void cerrarPedido(String Pedido){
-        AsyncHttpClient cliente2 =new AsyncHttpClient();
+        //AsyncHttpClient cliente2 =new AsyncHttpClient();
         String url="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosSurtido?PedidosId="+Pedido;
-        cliente2.get(url, new AsyncHttpResponseHandler() {
+        clienteweb.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 if (statusCode == 200) {
@@ -688,7 +775,12 @@ public class MainActivity extends AppCompatActivity {
                                         if(session!=null){
                                             MimeMessage message = new MimeMessage(session);
                                             message.setFrom(new InternetAddress((String)propiedades.get("mail.smtp.mail.sender")));
-                                            message.addRecipient(Message.RecipientType.TO, new InternetAddress("geoorge191@hotmail.com"));
+                                            if(destinatarios.size()>0){
+                                                for(int w=0;w<destinatarios.size();w++){
+                                                    message.addRecipient(Message.RecipientType.TO, new InternetAddress(destinatarios.get(w).toString()));
+                                                }
+                                            }
+                                            //message.addRecipient(Message.RecipientType.TO, new InternetAddress("geoorge191@hotmail.com"));
                                             message.setSubject("Prueba");
                                             message.setText("Texto");
                                             Transport t = session.getTransport("smtp");
@@ -736,9 +828,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void agregarIsidencias(String pedido){
-        AsyncHttpClient cliente3 =new AsyncHttpClient();
+        //AsyncHttpClient cliente3 =new AsyncHttpClient();
         String url="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosDetallesInsidenciasSel?PedidosId="+pedido;
-        cliente3.get(url, new AsyncHttpResponseHandler() {
+        clienteweb.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 if (statusCode == 200) {
