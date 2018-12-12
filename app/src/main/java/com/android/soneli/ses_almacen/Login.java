@@ -30,7 +30,7 @@ public class Login extends AppCompatActivity {
 
     ConexionInternet obj;
 
-    AsyncHttpClient clienteweb = new AsyncHttpClient();
+    //AsyncHttpClient clienteweb = new AsyncHttpClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +57,10 @@ public class Login extends AppCompatActivity {
     }
 
     public void validarusu(){
-        //AsyncHttpClient client = new AsyncHttpClient();
+        AsyncHttpClient client = new AsyncHttpClient();
         String url = "http://sonelidesarrollo.ddns.net:8088/Usuarios/LoginUsuario?User="+eUsuario.getText().toString()+"&Pass="+ePassword.getText().toString();
 
-        clienteweb.get(url, new AsyncHttpResponseHandler() {
+        client.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 if (statusCode == 200)
@@ -73,8 +73,10 @@ public class Login extends AppCompatActivity {
                             {
                                 vUsuario=jsonArray.getJSONObject(i).getString("UsuariosLogin");
                                 Intent principal = new Intent(getApplicationContext(), MainActivity.class);
+                                principal.putExtra("UsuarioLogin", eUsuario.getText().toString());
                                 startActivity(principal);
                                 finish();
+
                             }
                         }else{
                             Toast.makeText(Login.this, "Usuario o contraseña incorrecta.", Toast.LENGTH_SHORT).show();

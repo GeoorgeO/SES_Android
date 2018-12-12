@@ -90,7 +90,9 @@ public class MainActivity extends AppCompatActivity {
 
     ConexionInternet obj;
 
-    AsyncHttpClient clienteweb =new AsyncHttpClient();
+    //AsyncHttpClient clienteweb =new AsyncHttpClient();
+
+    String UsuarioLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
                 if(obj.isConnected())
                 {
                     Intent pedidos = new Intent(getApplicationContext(), seleccionarpedido.class);
+                    pedidos.putExtra("UsuarioLogin", UsuarioLogin);
                     startActivity(pedidos);
                     finish();
                 }else{
@@ -326,11 +329,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(obj.isConnected())
                 {
-                    cerrarPedido(eFolio.getText().toString());
-                    aviso("Aviso","Pedido cerrado");
-                    baviso.show();
-                    limpiarTodo();
-                    Lista.setAdapter(null);
+
+                    configuracorreo();
+
                 }else{
                     Toast.makeText(MainActivity.this, "Sin internet,Favor de verificar su conexión", Toast.LENGTH_SHORT).show();
                 }
@@ -407,10 +408,26 @@ public class MainActivity extends AppCompatActivity {
         Bundle parametros = this.getIntent().getExtras();
         if(parametros !=null){
             //Toast.makeText(MainActivity.this, getIntent().getExtras().getString("NumeroPedido"), Toast.LENGTH_SHORT).show();
-            eFolio.setText(getIntent().getExtras().getString("NumeroPedido"));
+            if(getIntent().getExtras().getString("NumeroPedido")==null){
+
+            }else{
+                eFolio.setText(getIntent().getExtras().getString("NumeroPedido"));
+            }
+
+            if(getIntent().getExtras().getString("UsuarioLogin")==null){
+
+            }else{
+                UsuarioLogin=getIntent().getExtras().getString("UsuarioLogin");
+                //Toast.makeText(MainActivity.this, UsuarioLogin, Toast.LENGTH_SHORT).show();
+            }
+
             if(obj.isConnected())
             {
-                RecibaDatos(eFolio.getText().toString());
+                if(eFolio.getText().toString().isEmpty()){
+
+                }else{
+                    RecibaDatos(eFolio.getText().toString());
+                }
             }else{
                 Toast.makeText(MainActivity.this, "Sin internet,Favor de verificar su conexión", Toast.LENGTH_SHORT).show();
             }
@@ -420,9 +437,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void configuracorreo(){
-        //AsyncHttpClient cliente2 =new AsyncHttpClient();
+        AsyncHttpClient cliente =new AsyncHttpClient();
         String url="http://sonelidesarrollo.ddns.net:8088/Email/CuentaEmail";
-        clienteweb.get(url, new AsyncHttpResponseHandler() {
+        cliente.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 if (statusCode == 200) {
@@ -437,9 +454,10 @@ public class MainActivity extends AppCompatActivity {
                                 correo=jsonArray.getJSONObject(i).getString("CorreoRemitente");
                                 puertosmtp=Integer.parseInt(jsonArray.getJSONObject(i).getString("CorreoPuertoSalida"));
                                 contraseña=jsonArray.getJSONObject(i).getString("CorreoContrasenia");
+
                             }
 
-
+                            destinatarioscorreo();
                         }
                     } catch (JSONException e) {
                         Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
@@ -450,16 +468,16 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [PED]", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [MAILCONF]", Toast.LENGTH_SHORT).show();
             }
         });
 
     }
 
     public void destinatarioscorreo(){
-        //AsyncHttpClient cliente2 =new AsyncHttpClient();
+        AsyncHttpClient cliente2 =new AsyncHttpClient();
         String url="http://sonelidesarrollo.ddns.net:8088/Email/DestinoEmail";
-        clienteweb.get(url, new AsyncHttpResponseHandler() {
+        cliente2.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 if (statusCode == 200) {
@@ -474,7 +492,7 @@ public class MainActivity extends AppCompatActivity {
 
                             }
 
-
+                            cerrarPedido(eFolio.getText().toString());
                         }
                     } catch (JSONException e) {
                         Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
@@ -485,7 +503,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [PED]", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [MAILDES]", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -497,10 +515,10 @@ public class MainActivity extends AppCompatActivity {
         Lista.setAdapter(null);
         arrayArticulos.clear();
 
-        AsyncHttpClient client = new AsyncHttpClient();
+        AsyncHttpClient cliente3 = new AsyncHttpClient();
         String url = "http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosDetalles?PedidosId="+Folio;
 
-        client.get(url, new AsyncHttpResponseHandler() {
+        cliente3.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 if (statusCode == 200)
@@ -556,9 +574,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void revisaArticulo(String PArticulo){
 
-        //AsyncHttpClient cliente=new AsyncHttpClient();
+        AsyncHttpClient cliente4=new AsyncHttpClient();
         String url = "http://sonelidesarrollo.ddns.net:8088/Pedidos/Articulo?ArticuloCodigo="+PArticulo;
-        clienteweb.get(url, new AsyncHttpResponseHandler() {
+        cliente4.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
 
@@ -615,9 +633,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void guardarDatosPedido(String pedido,String ArticuloCodigo,int Surtido){
-        //AsyncHttpClient cliente2 =new AsyncHttpClient();
+        AsyncHttpClient cliente5 =new AsyncHttpClient();
         String url="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosDetallesUpdate?PedidosId="+pedido+"&ArticuloCodigo="+ArticuloCodigo+"&Surtido="+String.valueOf(Surtido);
-        clienteweb.get(url, new AsyncHttpResponseHandler() {
+        cliente5.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 if (statusCode == 200) {
@@ -653,10 +671,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void guardarDatosInsidencias(String pedido,String ArticuloCodigo,String Descripcion,int Cantidad,String Tipo){
-        //AsyncHttpClient cliente2 =new AsyncHttpClient();
+        AsyncHttpClient cliente6 =new AsyncHttpClient();
         String url="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosDetallesInsidencias?PedidosId="+pedido+"&ArticuloCodigo="+ArticuloCodigo+"&ArticuloDescripcion="+Descripcion.replaceAll("[^\\dA-Za-z\\s]", "")+"&Cantidad="+String.valueOf(Cantidad)+"&Tipo="+Tipo;
 
-        clienteweb.get(url, new AsyncHttpResponseHandler() {
+        cliente6.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 if (statusCode == 200) {
@@ -691,9 +709,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void llenaproveedor(String Pedido){
-        //AsyncHttpClient cliente2 =new AsyncHttpClient();
+        AsyncHttpClient cliente7 =new AsyncHttpClient();
         String url="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosNombreProveedor?PedidosId="+Pedido;
-        clienteweb.get(url, new AsyncHttpResponseHandler() {
+        cliente7.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 if (statusCode == 200) {
@@ -735,9 +753,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void cerrarPedido(String Pedido){
-        //AsyncHttpClient cliente2 =new AsyncHttpClient();
+        AsyncHttpClient cliente8 =new AsyncHttpClient();
         String url="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosSurtido?PedidosId="+Pedido;
-        clienteweb.get(url, new AsyncHttpResponseHandler() {
+
+
+        cliente8.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 if (statusCode == 200) {
@@ -749,68 +769,17 @@ public class MainActivity extends AppCompatActivity {
                             for(int i=0;i<jsonArray.length();i++)
                             {
                                 if(jsonArray.getJSONObject(i).getString("resultado")=="true"){
-                                    StrictMode.ThreadPolicy policy=new StrictMode.ThreadPolicy.Builder().permitAll().build();
-                                    StrictMode.setThreadPolicy(policy);
-                                    Properties propiedades = new Properties();
 
-                                    propiedades.put("mail.smtp.host",hostcorreo);
-                                    propiedades.put("mail.smtp.socketFactory.port",String.valueOf(puertosmtp));
-                                    //propiedades.put("mail.smtp.starttls.enable", "true");
-                                    propiedades.put("mail.smtp.mail.sender",correo);
-                                    //propiedades.put("mail.smtp.socketFactory.class","javax.net.ssl.SSLSocketFactory");
-                                    propiedades.put("mail.smtp.auth","true");
-                                    propiedades.put("mail.smtp.port",String.valueOf(puertosmtp));
-                                    propiedades.put("mail.smtp.user", correo);
-                                    propiedades.put("mail.smtp.socketFactory.fallback", "false");
-
-                                    try{
-                                        session= Session.getDefaultInstance(propiedades, new Authenticator() {
-                                            @Override
-                                            protected PasswordAuthentication getPasswordAuthentication() {
-                                                return new PasswordAuthentication(correo,contraseña);
-                                            }
-                                        });
-
-
-                                        if(session!=null){
-                                            MimeMessage message = new MimeMessage(session);
-                                            message.setFrom(new InternetAddress((String)propiedades.get("mail.smtp.mail.sender")));
-                                            if(destinatarios.size()>0){
-                                                for(int w=0;w<destinatarios.size();w++){
-                                                    message.addRecipient(Message.RecipientType.TO, new InternetAddress(destinatarios.get(w).toString()));
-                                                }
-                                            }
-                                            //message.addRecipient(Message.RecipientType.TO, new InternetAddress("geoorge191@hotmail.com"));
-                                            message.setSubject("Prueba");
-                                            message.setText("Texto");
-                                            Transport t = session.getTransport("smtp");
-                                            t.connect((String)propiedades.get("mail.smtp.user"), contraseña);
-                                            t.sendMessage(message, message.getAllRecipients());
-                                            t.close();
-
-                                            /*Message mensaje= new MimeMessage(session);
-                                            mensaje.setFrom(new InternetAddress("soporte@grupoalegro.com"));
-                                            mensaje.setSubject("Prueba de correo android");
-                                            mensaje.setRecipients(Message.RecipientType.TO,InternetAddress.parse("geoorge191@hotmail.com"));
-                                            mensaje.setContent("Esto es una prueba de correo con google mail","text/html; charset=utf-8");
-
-                                            //Transport.send(mensaje);
-                                            Transport transporte=session.getTransport("smtp");
-                                            transporte.connect("mail.grupoalegro.com",26,"soporte@grupoalegro.com","Opoortoporte@1%@");
-                                            transporte.sendMessage(mensaje,mensaje.getAllRecipients());
-                                            transporte.close();*/
-                                        }else{
-                                            Toast.makeText(MainActivity.this, "sesion vacia", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }catch (Exception e){
-                                        e.printStackTrace();
-                                    }
+                                    enviarcorreo();
 
                                 }else{
                                     Toast.makeText(MainActivity.this, "Ocurrio un error al intentar cerrar el pedido.", Toast.LENGTH_SHORT).show();
                                 }
                             }
-
+                            aviso("Aviso","Pedido cerrado");
+                            baviso.show();
+                            limpiarTodo();
+                            Lista.setAdapter(null);
 
                         }
                     } catch (JSONException e) {
@@ -827,10 +796,69 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void enviarcorreo(){
+        StrictMode.ThreadPolicy policy=new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        Properties propiedades = new Properties();
+
+        propiedades.put("mail.smtp.host",hostcorreo);
+        propiedades.put("mail.smtp.socketFactory.port",String.valueOf(puertosmtp));
+        //propiedades.put("mail.smtp.starttls.enable", "true");
+        propiedades.put("mail.smtp.mail.sender",correo);
+        //propiedades.put("mail.smtp.socketFactory.class","javax.net.ssl.SSLSocketFactory");
+        propiedades.put("mail.smtp.auth","true");
+        propiedades.put("mail.smtp.port",String.valueOf(puertosmtp));
+        propiedades.put("mail.smtp.user", correo);
+        propiedades.put("mail.smtp.socketFactory.fallback", "false");
+
+        try{
+            session= Session.getDefaultInstance(propiedades, new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(correo,contraseña);
+                }
+            });
+
+
+            if(session!=null){
+                MimeMessage message = new MimeMessage(session);
+                message.setFrom(new InternetAddress((String)propiedades.get("mail.smtp.mail.sender")));
+                if(destinatarios.size()>0){
+                    for(int w=0;w<destinatarios.size();w++){
+                        message.addRecipient(Message.RecipientType.TO, new InternetAddress(destinatarios.get(w).toString()));
+                    }
+                }
+                //message.addRecipient(Message.RecipientType.TO, new InternetAddress("geoorge191@hotmail.com"));
+                message.setSubject("Pedido  N° "+eFolio.getText().toString()+" cerrado" );
+                message.setText("El pedido para "+tProveedor.getText().toString()+" con folio N° "+eFolio.getText().toString()+" creado el "+tFecha.getText().toString()+", ha sido cerrado por el usuario ["+UsuarioLogin+"]");
+                Transport t = session.getTransport("smtp");
+                t.connect((String)propiedades.get("mail.smtp.user"), contraseña);
+                t.sendMessage(message, message.getAllRecipients());
+                t.close();
+
+                                            /*Message mensaje= new MimeMessage(session);
+                                            mensaje.setFrom(new InternetAddress("soporte@grupoalegro.com"));
+                                            mensaje.setSubject("Prueba de correo android");
+                                            mensaje.setRecipients(Message.RecipientType.TO,InternetAddress.parse("geoorge191@hotmail.com"));
+                                            mensaje.setContent("Esto es una prueba de correo con google mail","text/html; charset=utf-8");
+
+                                            //Transport.send(mensaje);
+                                            Transport transporte=session.getTransport("smtp");
+                                            transporte.connect("mail.grupoalegro.com",26,"soporte@grupoalegro.com","Opoortoporte@1%@");
+                                            transporte.sendMessage(mensaje,mensaje.getAllRecipients());
+                                            transporte.close();*/
+            }else{
+                Toast.makeText(MainActivity.this, "sesion vacia", Toast.LENGTH_SHORT).show();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     public void agregarIsidencias(String pedido){
-        //AsyncHttpClient cliente3 =new AsyncHttpClient();
+        AsyncHttpClient cliente9 =new AsyncHttpClient();
         String url="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosDetallesInsidenciasSel?PedidosId="+pedido;
-        clienteweb.get(url, new AsyncHttpResponseHandler() {
+        cliente9.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 if (statusCode == 200) {

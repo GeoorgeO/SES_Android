@@ -33,6 +33,8 @@ public class seleccionarpedido extends AppCompatActivity {
     String vpedido;
     int cliks;
 
+String UsuarioLogin;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,15 +67,27 @@ public class seleccionarpedido extends AppCompatActivity {
 
     }
 
+    protected void onStart(){
+        super.onStart();
+        Bundle parametros = this.getIntent().getExtras();
+        if(parametros !=null){
+            if(getIntent().getExtras().getString("UsuarioLogin")==null){
+
+            }else {
+                UsuarioLogin = getIntent().getExtras().getString("UsuarioLogin");
+            }
+        }
+    }
+
     public void RecibaDatos(){
 
         Listapedidos.setAdapter(null);
         arrayPedidos.clear();
+        AsyncHttpClient cliente10 = new AsyncHttpClient();
 
-        AsyncHttpClient client = new AsyncHttpClient();
         String url = "http://sonelidesarrollo.ddns.net:8088/Pedidos/Pedidos";
 
-        client.get(url, new AsyncHttpResponseHandler() {
+        cliente10.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 if (statusCode == 200)
@@ -94,11 +108,8 @@ public class seleccionarpedido extends AppCompatActivity {
                         if(arrayPedidos.size()>0){
                             Adapter=new Adaptador_listapedidos(getApplicationContext(),arrayPedidos);
                             Listapedidos.setAdapter(Adapter);
-
-
                         }else{
                             Toast.makeText(seleccionarpedido.this, "Folio No encontrado", Toast.LENGTH_SHORT).show();
-
                         }
 
 
@@ -112,6 +123,7 @@ public class seleccionarpedido extends AppCompatActivity {
                                         Intent intent = new Intent(seleccionarpedido.this, MainActivity.class);
                                         intent.removeExtra("NumeroPedido");
                                         intent.putExtra("NumeroPedido", arrayPedidos.get(position).getPedidosid());
+                                        intent.putExtra("UsuarioLogin", UsuarioLogin);
                                         startActivity(intent);
 
                                         finish();
