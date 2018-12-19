@@ -32,7 +32,14 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -436,7 +443,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void configuracorreo(){
+   /* public void configuracorreo(){
         AsyncHttpClient cliente =new AsyncHttpClient();
         String url="http://sonelidesarrollo.ddns.net:8088/Email/CuentaEmail";
         cliente.get(url, new AsyncHttpResponseHandler() {
@@ -472,9 +479,64 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    } */
+    public void configuracorreo(){
+        String sql="http://sonelidesarrollo.ddns.net:8088/Email/CuentaEmail";
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        URL url=null;
+
+        HttpURLConnection conn;
+        try {
+            url=new URL(sql);
+            conn=(HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            BufferedReader in =new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            String inputLine;
+
+            StringBuffer response =new StringBuffer();
+
+            String json="";
+
+            while ((inputLine=in.readLine())!=null){
+                response.append(inputLine);
+            }
+
+            json=response.toString();
+
+            JSONArray jsonarr=null;
+
+            jsonarr=new JSONArray(json);
+
+            for (int i=0;i<jsonarr.length();i++){
+                JSONObject jsonobject=jsonarr.getJSONObject(i);
+
+                hostcorreo=jsonobject.optString("CorreoServidorSalida");
+                correo=jsonobject.optString("CorreoRemitente");
+                puertosmtp=Integer.parseInt(jsonobject.optString("CorreoPuertoSalida"));
+                contraseña=jsonobject.optString("CorreoContrasenia");
+
+            }
+            conn.disconnect();
+
+            destinatarioscorreo();
+
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void destinatarioscorreo(){
+   /* public void destinatarioscorreo(){
         AsyncHttpClient cliente2 =new AsyncHttpClient();
         String url="http://sonelidesarrollo.ddns.net:8088/Email/DestinoEmail";
         cliente2.get(url, new AsyncHttpResponseHandler() {
@@ -507,10 +569,63 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    } */
+
+    public void destinatarioscorreo(){
+        String sql="http://sonelidesarrollo.ddns.net:8088/Email/DestinoEmail";
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        URL url=null;
+
+        HttpURLConnection conn;
+        try {
+            url=new URL(sql);
+            conn=(HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            BufferedReader in =new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            String inputLine;
+
+            StringBuffer response =new StringBuffer();
+
+            String json="";
+
+            while ((inputLine=in.readLine())!=null){
+                response.append(inputLine);
+            }
+
+            json=response.toString();
+
+            JSONArray jsonarr=null;
+
+            jsonarr=new JSONArray(json);
+
+            for (int i=0;i<jsonarr.length();i++){
+                JSONObject jsonobject=jsonarr.getJSONObject(i);
+
+                destinatarios.add(jsonobject.optString("CorreoNombre"));
+
+            }
+            conn.disconnect();
+
+            cerrarPedido(eFolio.getText().toString());
+
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 
-    public void RecibaDatos(String Folio){
+   /* public void RecibaDatos(String Folio){
 
         Lista.setAdapter(null);
         arrayArticulos.clear();
@@ -570,9 +685,85 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Ocurrio un error al conectar al servidor [PEDLIST]", Toast.LENGTH_SHORT).show();
             }
         });
+    }*/
+    public void RecibaDatos(String Folio){
+        String sql="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosDetalles?PedidosId="+Folio;
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        URL url=null;
+
+        HttpURLConnection conn;
+        try {
+            url=new URL(sql);
+            conn=(HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            BufferedReader in =new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            String inputLine;
+
+            StringBuffer response =new StringBuffer();
+
+            String json="";
+
+            while ((inputLine=in.readLine())!=null){
+                response.append(inputLine);
+            }
+
+            json=response.toString();
+
+            JSONArray jsonarr=null;
+
+            jsonarr=new JSONArray(json);
+
+            Pedido Articulo;
+
+            for (int i=0;i<jsonarr.length();i++){
+                JSONObject jsonobject=jsonarr.getJSONObject(i);
+
+                Articulo=new Pedido(jsonobject.optString("ArticuloCodigo"),jsonobject.optString("ArticuloDescripcion"),Integer.parseInt(jsonobject.optString("TPedido")),Integer.parseInt(jsonobject.optString("Surtido")));
+                arrayArticulos.add(Articulo);
+
+            }
+            conn.disconnect();
+
+            if(arrayArticulos.size()>0){
+                Adapter=new Adaptador_Tabla(getApplicationContext(),arrayArticulos);
+                Lista.setAdapter(Adapter);
+
+                eCodigoArt.setEnabled(true);
+                eFolio.setEnabled(false);
+            }else{
+                Toast.makeText(MainActivity.this, "Folio No encontrado", Toast.LENGTH_SHORT).show();
+                eCodigoArt.setEnabled(false);
+            }
+
+            llenaproveedor(eFolio.getText().toString());
+            //llenadoaleatorio();
+
+            Lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Toast.makeText(MainActivity.this, arrayArticulos.get(position).getArticuloDescripcion(), Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
+
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void revisaArticulo(String PArticulo){
+   /* public void revisaArticulo(String PArticulo){
 
         AsyncHttpClient cliente4=new AsyncHttpClient();
         String url = "http://sonelidesarrollo.ddns.net:8088/Pedidos/Articulo?ArticuloCodigo="+PArticulo;
@@ -630,9 +821,78 @@ public class MainActivity extends AppCompatActivity {
         });
         Toast.makeText(MainActivity.this, String.valueOf(sista), Toast.LENGTH_SHORT).show();
 
+    }*/
+    public void revisaArticulo(String PArticulo){
+        String sql="http://sonelidesarrollo.ddns.net:8088/Pedidos/Articulo?ArticuloCodigo="+PArticulo;
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        URL url=null;
+
+        HttpURLConnection conn;
+        try {
+            url=new URL(sql);
+            conn=(HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            BufferedReader in =new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            String inputLine;
+
+            StringBuffer response =new StringBuffer();
+
+            String json="";
+
+            while ((inputLine=in.readLine())!=null){
+                response.append(inputLine);
+            }
+
+            json=response.toString();
+
+            JSONArray jsonarr=null;
+
+            jsonarr=new JSONArray(json);
+
+            int lRecibido;
+            Pedido Articulo;
+
+            for (int i=0;i<jsonarr.length();i++){
+                JSONObject jsonobject=jsonarr.getJSONObject(i);
+
+                lRecibido=(Integer.parseInt(eCajas.getText().toString()) * Integer.parseInt(ePxC.getText().toString()));
+                Articulo=new Pedido(jsonobject.optString("ArticuloCodigo"),jsonobject.optString("ArticuloDescripcion"),0,lRecibido);
+
+                guardarDatosInsidencias(eFolio.getText().toString().replace(" ",""), jsonobject.optString("ArticuloCodigo"), jsonobject.optString("ArticuloDescripcion"), lRecibido, "Articulo No pedido");
+
+                arrayArticulos.add(Articulo);
+
+            }
+            conn.disconnect();
+
+            if(arrayArticulos.size()>0){
+                Nopedidos.add(arrayArticulos.size()-1);
+            }else{
+                Nopedidos.add(arrayArticulos.size());
+            }
+
+            Lista.setAdapter(null);
+            Lista.setAdapter(Adapter);
+
+            limpiarAgregado();
+
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void guardarDatosPedido(String pedido,String ArticuloCodigo,int Surtido){
+  /*  public void guardarDatosPedido(String pedido,String ArticuloCodigo,int Surtido){
         AsyncHttpClient cliente5 =new AsyncHttpClient();
         String url="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosDetallesUpdate?PedidosId="+pedido+"&ArticuloCodigo="+ArticuloCodigo+"&Surtido="+String.valueOf(Surtido);
         cliente5.get(url, new AsyncHttpResponseHandler() {
@@ -668,9 +928,64 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [PED]", Toast.LENGTH_SHORT).show();
             }
         });
+    }*/
+    public void guardarDatosPedido(String pedido,String ArticuloCodigo,int Surtido){
+        String sql="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosDetallesUpdate?PedidosId="+pedido+"&ArticuloCodigo="+ArticuloCodigo+"&Surtido="+String.valueOf(Surtido);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        URL url=null;
+
+        HttpURLConnection conn;
+        try {
+            url=new URL(sql);
+            conn=(HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            BufferedReader in =new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            String inputLine;
+
+            StringBuffer response =new StringBuffer();
+
+            String json="";
+
+            while ((inputLine=in.readLine())!=null){
+                response.append(inputLine);
+            }
+
+            json=response.toString();
+
+            JSONArray jsonarr=null;
+
+            jsonarr=new JSONArray(json);
+
+            for (int i=0;i<jsonarr.length();i++){
+                JSONObject jsonobject=jsonarr.getJSONObject(i);
+
+                if(jsonobject.optString("resultado")=="true"){
+
+
+                }else{
+                    Toast.makeText(MainActivity.this, "Ocurrio un error al intentar guardar este articulo.", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+            conn.disconnect();
+
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void guardarDatosInsidencias(String pedido,String ArticuloCodigo,String Descripcion,int Cantidad,String Tipo){
+    /*public void guardarDatosInsidencias(String pedido,String ArticuloCodigo,String Descripcion,int Cantidad,String Tipo){
         AsyncHttpClient cliente6 =new AsyncHttpClient();
         String url="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosDetallesInsidencias?PedidosId="+pedido+"&ArticuloCodigo="+ArticuloCodigo+"&ArticuloDescripcion="+Descripcion.replaceAll("[^\\dA-Za-z\\s]", "")+"&Cantidad="+String.valueOf(Cantidad)+"&Tipo="+Tipo;
 
@@ -706,9 +1021,62 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [INSIDEN]", Toast.LENGTH_SHORT).show();
             }
         });
+    }*/
+    public void guardarDatosInsidencias(String pedido,String ArticuloCodigo,String Descripcion,int Cantidad,String Tipo){
+        String sql="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosDetallesInsidencias?PedidosId="+pedido+"&ArticuloCodigo="+ArticuloCodigo+"&ArticuloDescripcion="+Descripcion.replaceAll("[^\\dA-Za-z\\s]", "")+"&Cantidad="+String.valueOf(Cantidad)+"&Tipo="+Tipo;
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        URL url=null;
+
+        HttpURLConnection conn;
+        try {
+            url=new URL(sql);
+            conn=(HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            BufferedReader in =new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            String inputLine;
+
+            StringBuffer response =new StringBuffer();
+
+            String json="";
+
+            while ((inputLine=in.readLine())!=null){
+                response.append(inputLine);
+            }
+
+            json=response.toString();
+
+            JSONArray jsonarr=null;
+
+            jsonarr=new JSONArray(json);
+
+            for (int i=0;i<jsonarr.length();i++){
+                JSONObject jsonobject=jsonarr.getJSONObject(i);
+
+                if(jsonobject.optString("resultado")=="true"){
+
+                }else{
+                    Toast.makeText(MainActivity.this, "Ocurrio un error al intentar guardar este articulo.", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+            conn.disconnect();
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void llenaproveedor(String Pedido){
+    /*public void llenaproveedor(String Pedido){
         AsyncHttpClient cliente7 =new AsyncHttpClient();
         String url="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosNombreProveedor?PedidosId="+Pedido;
         cliente7.get(url, new AsyncHttpResponseHandler() {
@@ -750,9 +1118,69 @@ public class MainActivity extends AppCompatActivity {
         });
         agregarIsidencias(eFolio.getText().toString());
 
+    }*/
+    public void llenaproveedor(String Pedido){
+        String sql="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosNombreProveedor?PedidosId="+Pedido;
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        URL url=null;
+
+        HttpURLConnection conn;
+        try {
+            url=new URL(sql);
+            conn=(HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            BufferedReader in =new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            String inputLine;
+
+            StringBuffer response =new StringBuffer();
+
+            String json="";
+
+            while ((inputLine=in.readLine())!=null){
+                response.append(inputLine);
+            }
+
+            json=response.toString();
+
+            JSONArray jsonarr=null;
+
+            jsonarr=new JSONArray(json);
+
+            for (int i=0;i<jsonarr.length();i++){
+                JSONObject jsonobject=jsonarr.getJSONObject(i);
+
+                tProveedor.setText(jsonobject.optString("ProveedorNombre"));
+                tFecha.setText(jsonobject.optString("FechaInsert"));
+
+                if(jsonobject.optString("PedidosSurtido")=="true"){
+                    inhabilitaTodo();
+                    aviso("Aviso","Pedido Bloqueado por estatus de surtido.");
+                    baviso.show();
+                }else{
+                    bGuardar.setEnabled(true);
+                }
+
+            }
+
+            conn.disconnect();
+            agregarIsidencias(eFolio.getText().toString());
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void cerrarPedido(String Pedido){
+    /*public void cerrarPedido(String Pedido){
         AsyncHttpClient cliente8 =new AsyncHttpClient();
         String url="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosSurtido?PedidosId="+Pedido;
 
@@ -794,6 +1222,66 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [PED]", Toast.LENGTH_SHORT).show();
             }
         });
+    }*/
+    public void cerrarPedido(String Pedido){
+        String sql="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosSurtido?PedidosId="+Pedido+"&PedidosSurtido=1";
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        URL url=null;
+
+        HttpURLConnection conn;
+        try {
+            url=new URL(sql);
+            conn=(HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            BufferedReader in =new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            String inputLine;
+
+            StringBuffer response =new StringBuffer();
+
+            String json="";
+
+            while ((inputLine=in.readLine())!=null){
+                response.append(inputLine);
+            }
+
+            json=response.toString();
+
+            JSONArray jsonarr=null;
+
+            jsonarr=new JSONArray(json);
+
+            for (int i=0;i<jsonarr.length();i++){
+                JSONObject jsonobject=jsonarr.getJSONObject(i);
+
+                if(jsonobject.optString("resultado")=="true"){
+
+                    enviarcorreo();
+
+                    aviso("Aviso","Pedido cerrado");
+                    baviso.show();
+                    limpiarTodo();
+                    Lista.setAdapter(null);
+
+                }else{
+                    Toast.makeText(MainActivity.this, "Ocurrio un error al intentar cerrar el pedido.", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+            conn.disconnect();
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void enviarcorreo(){
@@ -855,7 +1343,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void agregarIsidencias(String pedido){
+
+   /* public void agregarIsidencias(String pedido){
         AsyncHttpClient cliente9 =new AsyncHttpClient();
         String url="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosDetallesInsidenciasSel?PedidosId="+pedido;
         cliente9.get(url, new AsyncHttpResponseHandler() {
@@ -902,7 +1391,76 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
             }
         });
+    }*/
+    public void agregarIsidencias(String pedido){
+        String sql="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosDetallesInsidenciasSel?PedidosId="+pedido;
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        URL url=null;
+
+        HttpURLConnection conn;
+        try {
+            url=new URL(sql);
+            conn=(HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            BufferedReader in =new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            String inputLine;
+
+            StringBuffer response =new StringBuffer();
+
+            String json="";
+
+            while ((inputLine=in.readLine())!=null){
+                response.append(inputLine);
+            }
+
+            json=response.toString();
+
+            JSONArray jsonarr=null;
+
+            jsonarr=new JSONArray(json);
+
+            Pedido Articulo;
+
+            for (int i=0;i<jsonarr.length();i++){
+                JSONObject jsonobject=jsonarr.getJSONObject(i);
+
+                Articulo=new Pedido(jsonobject.optString("ArticuloCodigo"),jsonobject.optString("ArticuloDescripcion"),0,Integer.parseInt(jsonobject.optString("Cantidad")));
+                arrayArticulos.add(Articulo);
+
+                if (jsonobject.optString("Tipo").equals("Articulo No pedido")){
+                    if(arrayArticulos.size()>0){
+                        Nopedidos.add(arrayArticulos.size()-1);
+                    }else{
+                        Nopedidos.add(arrayArticulos.size());
+                    }
+                }else{
+                    if (arrayArticulos.size()>0){
+                        Insidencias.add(arrayArticulos.size() -1);
+                    }else{
+                        Insidencias.add(arrayArticulos.size());
+                    }
+                }
+
+            }
+
+            conn.disconnect();
+
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
+
 
     private void inhabilitaTodo(){
         eCodigoArt.setEnabled(false);

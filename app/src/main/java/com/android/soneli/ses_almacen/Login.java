@@ -1,6 +1,7 @@
 package com.android.soneli.ses_almacen;
 
 import android.content.Intent;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -15,6 +16,14 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -46,7 +55,8 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
                 if(obj.isConnected())
                 {
-                    validarusu();
+                    //validarusu();
+                    getDatos();
                 }else{
                     Toast.makeText(Login.this, "Conexión sin internet,Favor de verificar.", Toast.LENGTH_SHORT).show();
                 }
@@ -56,7 +66,7 @@ public class Login extends AppCompatActivity {
         obj = new ConexionInternet(this);
     }
 
-    public void validarusu(){
+   /* public void validarusu(){
         AsyncHttpClient client = new AsyncHttpClient();
         String url = "http://sonelidesarrollo.ddns.net:8088/Usuarios/LoginUsuario?User="+eUsuario.getText().toString()+"&Pass="+ePassword.getText().toString();
 
@@ -94,6 +104,64 @@ public class Login extends AppCompatActivity {
                 Toast.makeText(Login.this, "Fallo ", Toast.LENGTH_SHORT).show();
             }
         });
+    } */
+
+
+
+    public void getDatos(){
+        String sql="http://sonelidesarrollo.ddns.net:8088/Usuarios/LoginUsuario?User="+eUsuario.getText().toString()+"&Pass="+ePassword.getText().toString();
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        URL url=null;
+
+        HttpURLConnection conn;
+        try {
+            url=new URL(sql);
+            conn=(HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("GET");
+            conn.connect();
+
+            BufferedReader in =new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            String inputLine;
+
+            StringBuffer response =new StringBuffer();
+
+            String json="";
+
+            while ((inputLine=in.readLine())!=null){
+                response.append(inputLine);
+            }
+
+            json=response.toString();
+
+            JSONArray jsonarr=null;
+
+            jsonarr=new JSONArray(json);
+
+            for (int i=0;i<jsonarr.length();i++){
+                JSONObject jsonobject=jsonarr.getJSONObject(i);
+
+                vUsuario=jsonobject.optString("UsuariosLogin");
+                Intent principal = new Intent(getApplicationContext(), MainActivity.class);
+                principal.putExtra("UsuarioLogin", eUsuario.getText().toString());
+                startActivity(principal);
+                finish();
+
+            }
+
+            conn.disconnect();
+
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 }
