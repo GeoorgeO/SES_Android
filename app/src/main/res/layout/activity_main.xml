@@ -39,7 +39,7 @@
             android:layout_marginTop="32dp"
             android:textColor="@android:color/white"
             app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toTopOf="@+id/tFecha" />
+            app:layout_constraintTop_toTopOf="@+id/toolbar" />
 
         <TextView
             android:id="@+id/tFecha"
@@ -49,8 +49,9 @@
             android:layout_marginEnd="4dp"
             android:textColor="@android:color/white"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/toolbar" />
-
+            app:layout_constraintTop_toTopOf="@+id/toolbar"
+            app:layout_constraintStart_toEndOf="@+id/imageView"
+            />
 
     </android.support.v7.widget.Toolbar>
 

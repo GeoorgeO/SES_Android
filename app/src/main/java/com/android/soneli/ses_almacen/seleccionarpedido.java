@@ -67,11 +67,36 @@ String UsuarioLogin;
         bcancelarl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(seleccionarpedido.this, MainActivity.class);
+                intent.putExtra("UsuarioLogin", UsuarioLogin);
+                startActivity(intent);
                 finish();
             }
         });
 
+        Listapedidos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+                cliks++;
+                if(vpedido.equals(arrayPedidos.get(position).getPedidosid())){
+                    if(cliks==2){
+                        Intent intent = new Intent(seleccionarpedido.this, MainActivity.class);
+                        intent.removeExtra("NumeroPedido");
+                        intent.putExtra("NumeroPedido", arrayPedidos.get(position).getPedidosid());
+                        intent.putExtra("UsuarioLogin", UsuarioLogin);
+                        startActivity(intent);
+
+                        finish();
+                    }
+                }else{
+                    cliks=1;
+                }
+                vpedido=arrayPedidos.get(position).getPedidosid();
+
+            }
+
+        });
 
     }
 
@@ -167,12 +192,22 @@ String UsuarioLogin;
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        URL url=null;
-
-        HttpURLConnection conn;
+        URL url= null;
         try {
-            url=new URL(sql);
-            conn=(HttpURLConnection) url.openConnection();
+            url = new URL(sql);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        HttpURLConnection conn= null;
+        try {
+            conn = (HttpURLConnection) url.openConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+
 
             conn.setRequestMethod("GET");
             conn.connect();
@@ -204,6 +239,7 @@ String UsuarioLogin;
                 arrayPedidos.add(Pedido);
 
             }
+            conn.disconnect();
 
             if(arrayPedidos.size()>0){
                 Adapter=new Adaptador_listapedidos(getApplicationContext(),arrayPedidos);
@@ -213,39 +249,23 @@ String UsuarioLogin;
             }
 
 
-            Listapedidos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                    cliks++;
-                    if(vpedido.equals(arrayPedidos.get(position).getPedidosid())){
-                        if(cliks==2){
-                            Intent intent = new Intent(seleccionarpedido.this, MainActivity.class);
-                            intent.removeExtra("NumeroPedido");
-                            intent.putExtra("NumeroPedido", arrayPedidos.get(position).getPedidosid());
-                            intent.putExtra("UsuarioLogin", UsuarioLogin);
-                            startActivity(intent);
 
-                            finish();
-                        }
-                    }else{
-                        cliks=1;
-                    }
-                    vpedido=arrayPedidos.get(position).getPedidosid();
 
-                }
-
-            });
-
-            conn.disconnect();
 
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(seleccionarpedido.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(seleccionarpedido.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         } catch (JSONException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(seleccionarpedido.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         }
     }
 

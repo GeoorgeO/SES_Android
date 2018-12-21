@@ -113,38 +113,47 @@ public class Login extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        URL url=null;
+        URL url= null;
 
-        HttpURLConnection conn;
         try {
-            url=new URL(sql);
-            conn=(HttpURLConnection) url.openConnection();
+            url = new URL(sql);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        HttpURLConnection conn = null;
+        try {
+            conn = (HttpURLConnection) url.openConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
 
             conn.setRequestMethod("GET");
             conn.connect();
 
-            BufferedReader in =new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
             String inputLine;
 
-            StringBuffer response =new StringBuffer();
+            StringBuffer response = new StringBuffer();
 
-            String json="";
+            String json = "";
 
-            while ((inputLine=in.readLine())!=null){
+            while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
             }
 
-            json=response.toString();
+            json = response.toString();
 
-            JSONArray jsonarr=null;
+            JSONArray jsonarr = null;
 
-            jsonarr=new JSONArray(json);
+            jsonarr = new JSONArray(json);
 
-            for (int i=0;i<jsonarr.length();i++){
-                JSONObject jsonobject=jsonarr.getJSONObject(i);
+            for (int i = 0; i < jsonarr.length(); i++) {
+                JSONObject jsonobject = jsonarr.getJSONObject(i);
 
-                vUsuario=jsonobject.optString("UsuariosLogin");
+                vUsuario = jsonobject.optString("UsuariosLogin");
                 Intent principal = new Intent(getApplicationContext(), MainActivity.class);
                 principal.putExtra("UsuarioLogin", eUsuario.getText().toString());
                 startActivity(principal);
@@ -155,12 +164,14 @@ public class Login extends AppCompatActivity {
             conn.disconnect();
 
 
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(Login.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         } catch (JSONException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(Login.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         }
     }
 

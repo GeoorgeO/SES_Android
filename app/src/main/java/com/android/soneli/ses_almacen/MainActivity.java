@@ -408,6 +408,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(MainActivity.this, arrayArticulos.get(position).getArticuloDescripcion(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     protected void onStart(){
@@ -485,12 +492,22 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        URL url=null;
-
-        HttpURLConnection conn;
+        URL url= null;
         try {
-            url=new URL(sql);
-            conn=(HttpURLConnection) url.openConnection();
+            url = new URL(sql);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        HttpURLConnection conn= null;
+        try {
+            conn = (HttpURLConnection) url.openConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+
 
             conn.setRequestMethod("GET");
             conn.connect();
@@ -529,10 +546,16 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         } catch (JSONException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -576,12 +599,22 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        URL url=null;
-
-        HttpURLConnection conn;
+        URL url= null;
         try {
-            url=new URL(sql);
-            conn=(HttpURLConnection) url.openConnection();
+            url = new URL(sql);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        HttpURLConnection conn= null;
+        try {
+            conn = (HttpURLConnection) url.openConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+
 
             conn.setRequestMethod("GET");
             conn.connect();
@@ -617,10 +650,16 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         } catch (JSONException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -691,12 +730,22 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        URL url=null;
-
-        HttpURLConnection conn;
+        URL url= null;
         try {
-            url=new URL(sql);
-            conn=(HttpURLConnection) url.openConnection();
+            url = new URL(sql);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        HttpURLConnection conn= null;
+        try {
+            conn = (HttpURLConnection) url.openConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+
 
             conn.setRequestMethod("GET");
             conn.connect();
@@ -744,24 +793,25 @@ public class MainActivity extends AppCompatActivity {
             llenaproveedor(eFolio.getText().toString());
             //llenadoaleatorio();
 
-            Lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Toast.makeText(MainActivity.this, arrayArticulos.get(position).getArticuloDescripcion(), Toast.LENGTH_SHORT).show();
-                }
-            });
-
 
 
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         } catch (JSONException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 
    /* public void revisaArticulo(String PArticulo){
 
@@ -827,12 +877,22 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        URL url=null;
-
-        HttpURLConnection conn;
+        URL url= null;
         try {
-            url=new URL(sql);
-            conn=(HttpURLConnection) url.openConnection();
+            url = new URL(sql);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        HttpURLConnection conn= null;
+        try {
+            conn = (HttpURLConnection) url.openConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+
 
             conn.setRequestMethod("GET");
             conn.connect();
@@ -885,10 +945,16 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         } catch (JSONException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -934,12 +1000,22 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        URL url=null;
-
-        HttpURLConnection conn;
+        URL url= null;
         try {
-            url=new URL(sql);
-            conn=(HttpURLConnection) url.openConnection();
+            url = new URL(sql);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        HttpURLConnection conn= null;
+        try {
+            conn = (HttpURLConnection) url.openConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+
 
             conn.setRequestMethod("GET");
             conn.connect();
@@ -978,10 +1054,16 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         } catch (JSONException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -1027,12 +1109,22 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        URL url=null;
-
-        HttpURLConnection conn;
+        URL url= null;
         try {
-            url=new URL(sql);
-            conn=(HttpURLConnection) url.openConnection();
+            url = new URL(sql);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        HttpURLConnection conn= null;
+        try {
+            conn = (HttpURLConnection) url.openConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+
 
             conn.setRequestMethod("GET");
             conn.connect();
@@ -1069,10 +1161,16 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         } catch (JSONException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -1124,12 +1222,23 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        URL url=null;
-
-        HttpURLConnection conn;
+        URL url= null;
         try {
-            url=new URL(sql);
-            conn=(HttpURLConnection) url.openConnection();
+            url = new URL(sql);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        HttpURLConnection conn= null;
+        try {
+            conn = (HttpURLConnection) url.openConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+
+
 
             conn.setRequestMethod("GET");
             conn.connect();
@@ -1173,10 +1282,16 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         } catch (JSONException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -1228,12 +1343,23 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        URL url=null;
 
-        HttpURLConnection conn;
+        URL url= null;
         try {
-            url=new URL(sql);
-            conn=(HttpURLConnection) url.openConnection();
+            url = new URL(sql);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        HttpURLConnection conn= null;
+        try {
+            conn = (HttpURLConnection) url.openConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+
+
 
             conn.setRequestMethod("GET");
             conn.connect();
@@ -1277,10 +1403,13 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            conn.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
+            conn.disconnect();
         } catch (JSONException e) {
             e.printStackTrace();
+            conn.disconnect();
         }
     }
 
@@ -1397,12 +1526,22 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        URL url=null;
-
-        HttpURLConnection conn;
+        URL url= null;
         try {
-            url=new URL(sql);
-            conn=(HttpURLConnection) url.openConnection();
+            url = new URL(sql);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        HttpURLConnection conn= null;
+        try {
+            conn = (HttpURLConnection) url.openConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+
 
             conn.setRequestMethod("GET");
             conn.connect();
@@ -1454,10 +1593,16 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         } catch (JSONException e) {
             e.printStackTrace();
+            conn.disconnect();
+            Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         }
     }
 
