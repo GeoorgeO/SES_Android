@@ -336,7 +336,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(obj.isConnected())
                 {
-
                     configuracorreo();
 
                 }else{
@@ -726,6 +725,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }*/
     public void RecibaDatos(String Folio){
+        Lista.setAdapter(null);
+        arrayArticulos.clear();
         String sql="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosDetalles?PedidosId="+Folio;
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -918,29 +919,37 @@ public class MainActivity extends AppCompatActivity {
             int lRecibido;
             Pedido Articulo;
 
-            for (int i=0;i<jsonarr.length();i++){
-                JSONObject jsonobject=jsonarr.getJSONObject(i);
+            if (jsonarr.length()>0){
+                for (int i=0;i<jsonarr.length();i++){
+                    JSONObject jsonobject=jsonarr.getJSONObject(i);
 
-                lRecibido=(Integer.parseInt(eCajas.getText().toString()) * Integer.parseInt(ePxC.getText().toString()));
-                Articulo=new Pedido(jsonobject.optString("ArticuloCodigo"),jsonobject.optString("ArticuloDescripcion"),0,lRecibido);
+                    lRecibido=(Integer.parseInt(eCajas.getText().toString()) * Integer.parseInt(ePxC.getText().toString()));
+                    Articulo=new Pedido(jsonobject.optString("ArticuloCodigo"),jsonobject.optString("ArticuloDescripcion"),0,lRecibido);
 
-                guardarDatosInsidencias(eFolio.getText().toString().replace(" ",""), jsonobject.optString("ArticuloCodigo"), jsonobject.optString("ArticuloDescripcion"), lRecibido, "Articulo No pedido");
+                    guardarDatosInsidencias(eFolio.getText().toString().replace(" ",""), jsonobject.optString("ArticuloCodigo"), jsonobject.optString("ArticuloDescripcion"), lRecibido, "Articulo No pedido");
 
-                arrayArticulos.add(Articulo);
+                    arrayArticulos.add(Articulo);
 
-            }
-            conn.disconnect();
+                    if(arrayArticulos.size()>0){
+                        Nopedidos.add(arrayArticulos.size()-1);
+                    }else{
+                        Nopedidos.add(arrayArticulos.size());
+                    }
 
-            if(arrayArticulos.size()>0){
-                Nopedidos.add(arrayArticulos.size()-1);
+                    Lista.setAdapter(null);
+                    Lista.setAdapter(Adapter);
+
+                    limpiarAgregado();
+                }
+                conn.disconnect();
             }else{
-                Nopedidos.add(arrayArticulos.size());
+                onCreateDialog("Aviso","EL codigo del articulo NO SE ENCUENTRA EN LA LISTA, ¿Deseas que se agrege como NUEVO PRODUCTO a la lista?");
+                builder.show();
             }
 
-            Lista.setAdapter(null);
-            Lista.setAdapter(Adapter);
 
-            limpiarAgregado();
+
+
 
 
         } catch (MalformedURLException e) {
@@ -1624,6 +1633,8 @@ public class MainActivity extends AppCompatActivity {
 
         rbCaptura.setChecked(true);
         rbEdicion.setChecked(false);
+
+        eCodigoArt.requestFocus();
     }
 
     private void limpiarTodo(){
