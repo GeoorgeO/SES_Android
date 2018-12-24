@@ -234,6 +234,17 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 }
                             }
+                            if(Excedentes.size()>0){
+                                for(int i=0;i<Excedentes.size();i++){
+                                    if(arrayArticulos.get(Integer.parseInt(String.valueOf(Excedentes.get(i)))).getArticuloCodigo().equals(eCodigoArt.getText().toString())){
+                                        yaestaenisidencias=true;
+                                        vTtipo="Excedentes";
+                                        break;
+                                    }
+                                }
+                            }
+
+
 
                             if(rbCaptura.isChecked()){
                                 for(int i=0;i<arrayArticulos.size();i++){
@@ -245,14 +256,30 @@ public class MainActivity extends AppCompatActivity {
                                         Articulo=new Pedido(arrayArticulos.get(i).getArticuloCodigo().toString(),arrayArticulos.get(i).getArticuloDescripcion().toString(),arrayArticulos.get(i).getTPedido(),lRecibido);
                                         arrayArticulos.set(i,Articulo);
 
+                                        if (lRecibido>arrayArticulos.get(i).getTPedido()){
+                                            vTtipo="Excedentes";
+                                        }
+
                                         Lista.setAdapter(null);
                                         Lista.setAdapter(Adapter);
 
                                         if (yaestaenisidencias==true){
-                                            guardarDatosInsidencias(eFolio.getText().toString().replace(" ",""), arrayArticulos.get(i).ArticuloCodigo, arrayArticulos.get(i).ArticuloDescripcion, lRecibido, vTtipo);
+                                            if(vTtipo.equals("Excedentes")){
+                                                guardarDatosInsidencias(eFolio.getText().toString().replace(" ",""), arrayArticulos.get(i).ArticuloCodigo, arrayArticulos.get(i).ArticuloDescripcion, lRecibido-arrayArticulos.get(i).getTPedido(), vTtipo,i);
+                                            }else{
+                                                guardarDatosInsidencias(eFolio.getText().toString().replace(" ",""), arrayArticulos.get(i).ArticuloCodigo, arrayArticulos.get(i).ArticuloDescripcion, lRecibido, vTtipo,i);
+                                            }
+
 
                                         }else{
-                                            guardarDatosPedido(eFolio.getText().toString(),arrayArticulos.get(i).getArticuloCodigo(),lRecibido);
+                                            //qui va el 31 en el pedido
+
+                                            if(vTtipo.equals("Excedentes")){
+                                                guardarDatosPedido(eFolio.getText().toString(),arrayArticulos.get(i).getArticuloCodigo(),lRecibido - arrayArticulos.get(i).getTPedido(),i);
+                                                guardarDatosInsidencias(eFolio.getText().toString().replace(" ",""), arrayArticulos.get(i).ArticuloCodigo, arrayArticulos.get(i).ArticuloDescripcion, lRecibido-arrayArticulos.get(i).getTPedido(), vTtipo,i);
+                                            }else{
+                                                guardarDatosPedido(eFolio.getText().toString(),arrayArticulos.get(i).getArticuloCodigo(),lRecibido,i);
+                                            }
                                         }
 
 
@@ -279,10 +306,10 @@ public class MainActivity extends AppCompatActivity {
                                         Lista.setAdapter(Adapter);
 
                                         if (yaestaenisidencias==true){
-                                            guardarDatosInsidencias(eFolio.getText().toString().replace(" ",""), arrayArticulos.get(i).ArticuloCodigo, arrayArticulos.get(i).ArticuloDescripcion, lRecibido, vTtipo);
+                                            guardarDatosInsidencias(eFolio.getText().toString().replace(" ",""), arrayArticulos.get(i).ArticuloCodigo, arrayArticulos.get(i).ArticuloDescripcion, lRecibido, vTtipo,i);
 
                                         }else{
-                                            guardarDatosPedido(eFolio.getText().toString(),arrayArticulos.get(i).getArticuloCodigo(),lRecibido);
+                                            guardarDatosPedido(eFolio.getText().toString(),arrayArticulos.get(i).getArticuloCodigo(),lRecibido,i);
                                         }
 
                                         limpiarAgregado();
@@ -926,7 +953,7 @@ public class MainActivity extends AppCompatActivity {
                     lRecibido=(Integer.parseInt(eCajas.getText().toString()) * Integer.parseInt(ePxC.getText().toString()));
                     Articulo=new Pedido(jsonobject.optString("ArticuloCodigo"),jsonobject.optString("ArticuloDescripcion"),0,lRecibido);
 
-                    guardarDatosInsidencias(eFolio.getText().toString().replace(" ",""), jsonobject.optString("ArticuloCodigo"), jsonobject.optString("ArticuloDescripcion"), lRecibido, "Articulo No pedido");
+                    guardarDatosInsidencias(eFolio.getText().toString().replace(" ",""), jsonobject.optString("ArticuloCodigo"), jsonobject.optString("ArticuloDescripcion"), lRecibido, "Articulo No pedido",i);
 
                     arrayArticulos.add(Articulo);
 
@@ -1004,7 +1031,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }*/
-    public void guardarDatosPedido(String pedido,String ArticuloCodigo,int Surtido){
+    public void guardarDatosPedido(String pedido,String ArticuloCodigo,int Surtido,int posision){
         String sql="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosDetallesUpdate?PedidosId="+pedido+"&ArticuloCodigo="+ArticuloCodigo+"&Surtido="+String.valueOf(Surtido);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -1055,6 +1082,9 @@ public class MainActivity extends AppCompatActivity {
 
                 }else{
                     Toast.makeText(MainActivity.this, "Ocurrio un error al intentar guardar este articulo.", Toast.LENGTH_SHORT).show();
+                    arrayArticulos.remove(posision);
+                    Lista.setAdapter(null);
+                    Lista.setAdapter(Adapter);
                 }
 
             }
@@ -1065,14 +1095,23 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             conn.disconnect();
             Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
+            arrayArticulos.remove(posision);
+            Lista.setAdapter(null);
+            Lista.setAdapter(Adapter);
         } catch (IOException e) {
             e.printStackTrace();
             conn.disconnect();
             Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
+            arrayArticulos.remove(posision);
+            Lista.setAdapter(null);
+            Lista.setAdapter(Adapter);
         } catch (JSONException e) {
             e.printStackTrace();
             conn.disconnect();
             Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
+            arrayArticulos.remove(posision);
+            Lista.setAdapter(null);
+            Lista.setAdapter(Adapter);
         }
     }
 
@@ -1113,7 +1152,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }*/
-    public void guardarDatosInsidencias(String pedido,String ArticuloCodigo,String Descripcion,int Cantidad,String Tipo){
+    public void guardarDatosInsidencias(String pedido,String ArticuloCodigo,String Descripcion,int Cantidad,String Tipo,int posision){
         String sql="http://sonelidesarrollo.ddns.net:8088/Pedidos/PedidosDetallesInsidencias?PedidosId="+pedido+"&ArticuloCodigo="+ArticuloCodigo+"&ArticuloDescripcion="+Descripcion.replaceAll("[^\\dA-Za-z\\s]", "")+"&Cantidad="+String.valueOf(Cantidad)+"&Tipo="+Tipo;
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -1163,6 +1202,9 @@ public class MainActivity extends AppCompatActivity {
 
                 }else{
                     Toast.makeText(MainActivity.this, "Ocurrio un error al intentar guardar este articulo.", Toast.LENGTH_SHORT).show();
+                    arrayArticulos.remove(posision);
+                    Lista.setAdapter(null);
+                    Lista.setAdapter(Adapter);
                 }
 
             }
@@ -1172,14 +1214,23 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             conn.disconnect();
             Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
+            arrayArticulos.remove(posision);
+            Lista.setAdapter(null);
+            Lista.setAdapter(Adapter);
         } catch (IOException e) {
             e.printStackTrace();
             conn.disconnect();
             Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
+            arrayArticulos.remove(posision);
+            Lista.setAdapter(null);
+            Lista.setAdapter(Adapter);
         } catch (JSONException e) {
             e.printStackTrace();
             conn.disconnect();
             Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
+            arrayArticulos.remove(posision);
+            Lista.setAdapter(null);
+            Lista.setAdapter(Adapter);
         }
     }
 
@@ -1574,28 +1625,57 @@ public class MainActivity extends AppCompatActivity {
             jsonarr=new JSONArray(json);
 
             Pedido Articulo;
-
+            Articulo=null;
             for (int i=0;i<jsonarr.length();i++){
                 JSONObject jsonobject=jsonarr.getJSONObject(i);
 
-                Articulo=new Pedido(jsonobject.optString("ArticuloCodigo"),jsonobject.optString("ArticuloDescripcion"),0,Integer.parseInt(jsonobject.optString("Cantidad")));
-                arrayArticulos.add(Articulo);
+
+
 
                 if (jsonobject.optString("Tipo").equals("Articulo No pedido")){
+                    Articulo=new Pedido(jsonobject.optString("ArticuloCodigo"),jsonobject.optString("ArticuloDescripcion"),0,Integer.parseInt(jsonobject.optString("Cantidad")));
                     if(arrayArticulos.size()>0){
                         Nopedidos.add(arrayArticulos.size()-1);
                     }else{
                         Nopedidos.add(arrayArticulos.size());
                     }
-                }else{
-                    if (arrayArticulos.size()>0){
+                }
+                if (jsonobject.optString("Tipo").equals("Articulo Nuevo")){
+                    Articulo=new Pedido(jsonobject.optString("ArticuloCodigo"),jsonobject.optString("ArticuloDescripcion"),0,Integer.parseInt(jsonobject.optString("Cantidad")));
+                    if (Insidencias.size()>0){
                         Insidencias.add(arrayArticulos.size() -1);
                     }else{
                         Insidencias.add(arrayArticulos.size());
                     }
                 }
+                if (jsonobject.optString("Tipo").equals("Excedentes")){
+
+                    int sumacantidad=0,tposision=0;
+                    for(int e=0;e<arrayArticulos.size();e++){
+                        if(jsonobject.optString("ArticuloCodigo").equals(arrayArticulos.get(e).getArticuloCodigo().toString())){
+                            tposision=e;
+                            sumacantidad=arrayArticulos.get(e).getCaptura();
+                            break;
+                        }
+                    }
+
+
+                    Articulo=new Pedido(jsonobject.optString("ArticuloCodigo"),jsonobject.optString("ArticuloDescripcion"),0,Integer.parseInt(jsonobject.optString("Cantidad"))+sumacantidad);
+                    arrayArticulos.set(tposision,Articulo);
+                    if (Excedentes.size()>0){
+                        Excedentes.add(arrayArticulos.size()  -1);
+                    }else{
+                        Excedentes.add(arrayArticulos.size() );
+                    }
+                }
+
+                arrayArticulos.add(Articulo);
+
+                Lista.setAdapter(null);
+                Lista.setAdapter(Adapter);
 
             }
+
 
             conn.disconnect();
 
@@ -1698,10 +1778,13 @@ public class MainActivity extends AppCompatActivity {
                         Articulo=new Pedido(eCodigoArt.getText().toString().replace(" ",""),"ARTICULO NUEVO",0,lRecibido);
                         arrayArticulos.add(Articulo);
 
+                        int f=0;
                         if (arrayArticulos.size()>0){
                             Insidencias.add(arrayArticulos.size() -1);
+                            f=arrayArticulos.size() -1;
                         }else{
                             Insidencias.add(arrayArticulos.size());
+                            f=arrayArticulos.size();
                         }
 
                         Lista.setAdapter(null);
@@ -1709,7 +1792,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                        guardarDatosInsidencias(eFolio.getText().toString(), eCodigoArt.getText().toString().replace(" ",""), "ARTICULO NUEVO", lRecibido, "Articulo Nuevo");
+                        guardarDatosInsidencias(eFolio.getText().toString(), eCodigoArt.getText().toString().replace(" ",""), "ARTICULO NUEVO", lRecibido, "Articulo Nuevo",f);
 
                         limpiarAgregado();
                     }
