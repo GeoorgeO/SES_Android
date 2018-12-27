@@ -212,56 +212,62 @@ public class MainActivity extends AppCompatActivity {
                         if(eCajas.getText().toString().replace(" ","").equals("") || ePxC.getText().toString().replace(" ","").equals("")){
                             Toast.makeText(MainActivity.this, "Falta agregar la cantidad de cajas y la cantidad de piezas", Toast.LENGTH_SHORT).show();
                         }else{
-                            boolean existe=false;
-                            boolean yaestaenisidencias=false;
-                            String vTtipo="";
-
-                            if(Nopedidos.size()>0){
-                                for(int i=0;i<Nopedidos.size();i++){
-                                    if(arrayArticulos.get(Integer.parseInt(String.valueOf(Nopedidos.get(i)))).getArticuloCodigo().equals(eCodigoArt.getText().toString())){
-                                        yaestaenisidencias=true;
-                                        vTtipo="Articulo No pedido";
-                                        break;
-                                    }
-                                }
-                            }
-                            if(Insidencias.size()>0){
-                                for(int i=0;i<Insidencias.size();i++){
-                                    if(arrayArticulos.get(Integer.parseInt(String.valueOf(Insidencias.get(i)))).getArticuloCodigo().equals(eCodigoArt.getText().toString())){
-                                        yaestaenisidencias=true;
-                                        vTtipo="Articulo Nuevo";
-                                        break;
-                                    }
-                                }
-                            }
-                            if(Excedentes.size()>0){
-                                for(int i=0;i<Excedentes.size();i++){
-                                    if(arrayArticulos.get(Integer.parseInt(String.valueOf(Excedentes.get(i)))).getArticuloCodigo().equals(eCodigoArt.getText().toString())){
-                                        yaestaenisidencias=true;
-                                        vTtipo="Excedentes";
-                                        break;
-                                    }
-                                }
-                            }
 
 
-                            Toast.makeText(MainActivity.this, "llego al if del captura o edicion", Toast.LENGTH_SHORT).show();
+                            boolean existe = false;
+                            boolean yaestaenisidencias = false;
+                            String vTtipo = "";
+
+                            try {
+                                if (Nopedidos.size() > 0) {
+                                    for (int i = 0; i < Nopedidos.size(); i++) {
+                                        if (arrayArticulos.get(Integer.parseInt(String.valueOf(Nopedidos.get(i)))).getArticuloCodigo().equals(eCodigoArt.getText().toString())) {
+                                            yaestaenisidencias = true;
+                                            vTtipo = "Articulo No pedido";
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (Insidencias.size() > 0) {
+                                    for (int i = 0; i < Insidencias.size(); i++) {
+                                        if (arrayArticulos.get(Integer.parseInt(String.valueOf(Insidencias.get(i)))).getArticuloCodigo().equals(eCodigoArt.getText().toString())) {
+                                            yaestaenisidencias = true;
+                                            vTtipo = "Articulo Nuevo";
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (Excedentes.size() > 0) {
+                                    for (int i = 0; i < Excedentes.size(); i++) {
+                                        if (arrayArticulos.get(Integer.parseInt(String.valueOf(Excedentes.get(i)))).getArticuloCodigo().equals(eCodigoArt.getText().toString())) {
+                                            yaestaenisidencias = true;
+                                            vTtipo = "Excedentes";
+                                            break;
+                                        }
+                                    }
+                                }
+                            }catch (Exception r){
+                                Toast.makeText(MainActivity.this, "A ocurrido el sig. error: "+r.getMessage()+"localizacion:"+r.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
+
+                            //Toast.makeText(MainActivity.this, "llego al if del captura o edicion", Toast.LENGTH_SHORT).show();
                             if(rbCaptura.isChecked()){
-                                Toast.makeText(MainActivity.this, "entro a captura", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(MainActivity.this, "entro a captura", Toast.LENGTH_SHORT).show();
                                 for(int i=0;i<arrayArticulos.size();i++){
                                     if(arrayArticulos.get(i).getArticuloCodigo().equals(eCodigoArt.getText().toString())){
-                                        Toast.makeText(MainActivity.this, "encontro el articulo en la lista", Toast.LENGTH_SHORT).show();
+                                        //Toast.makeText(MainActivity.this, "encontro el articulo en la lista", Toast.LENGTH_SHORT).show();
                                         int lRecibido;
                                         Pedido Articulo;
 
                                         lRecibido=arrayArticulos.get(i).getCaptura() + (Integer.parseInt(eCajas.getText().toString()) * Integer.parseInt(ePxC.getText().toString()));
-                                        Articulo=new Pedido(arrayArticulos.get(i).getArticuloCodigo().toString(),arrayArticulos.get(i).getArticuloDescripcion().toString(),arrayArticulos.get(i).getTPedido(),lRecibido);
+                                        Articulo=new Pedido(arrayArticulos.get(i).getArticuloCodigo(),arrayArticulos.get(i).getArticuloDescripcion(),arrayArticulos.get(i).getTPedido(),lRecibido);
                                         arrayArticulos.set(i,Articulo);
 
 
-                                        if (lRecibido>arrayArticulos.get(i).getTPedido()){
+                                        if (lRecibido>arrayArticulos.get(i).getTPedido() && vTtipo.equals("")){
                                             vTtipo="Excedentes";
-                                            Toast.makeText(MainActivity.this, "lo marco como excedente", Toast.LENGTH_SHORT).show();
+                                            //Toast.makeText(MainActivity.this, "lo marco como excedente", Toast.LENGTH_SHORT).show();
                                         }
 
 
@@ -270,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
                                         Lista.setAdapter(Adapter);
 
                                         if (yaestaenisidencias==true){
-                                            Toast.makeText(MainActivity.this, "ya estaba como incidente", Toast.LENGTH_SHORT).show();
+                                            //Toast.makeText(MainActivity.this, "ya estaba como incidente", Toast.LENGTH_SHORT).show();
                                             if(vTtipo.equals("Excedentes")){
                                                 if(lRecibido>arrayArticulos.get(i).getTPedido()){
                                                     guardarDatosInsidencias(eFolio.getText().toString().replace(" ",""), arrayArticulos.get(i).ArticuloCodigo, arrayArticulos.get(i).ArticuloDescripcion, lRecibido-arrayArticulos.get(i).getTPedido(), vTtipo,i);
@@ -284,15 +290,15 @@ public class MainActivity extends AppCompatActivity {
 
 
                                         }else{
-                                            Toast.makeText(MainActivity.this, "no estaba como incidente", Toast.LENGTH_SHORT).show();
+                                            //Toast.makeText(MainActivity.this, "no estaba como incidente", Toast.LENGTH_SHORT).show();
                                             //qui va el 31 en el pedido
 
                                             if(vTtipo.equals("Excedentes")){
-                                                Toast.makeText(MainActivity.this, "entra a guardar pedido e incidencia", Toast.LENGTH_SHORT).show();
+                                                //Toast.makeText(MainActivity.this, "entra a guardar pedido e incidencia", Toast.LENGTH_SHORT).show();
                                                 guardarDatosPedido(eFolio.getText().toString(),arrayArticulos.get(i).getArticuloCodigo(),lRecibido - arrayArticulos.get(i).getTPedido(),i);
                                                 guardarDatosInsidencias(eFolio.getText().toString().replace(" ",""), arrayArticulos.get(i).ArticuloCodigo, arrayArticulos.get(i).ArticuloDescripcion, lRecibido-arrayArticulos.get(i).getTPedido(), vTtipo,i);
                                             }else{
-                                                Toast.makeText(MainActivity.this, "entra a guardar solo pedido", Toast.LENGTH_SHORT).show();
+                                                //Toast.makeText(MainActivity.this, "entra a guardar solo pedido", Toast.LENGTH_SHORT).show();
                                                 guardarDatosPedido(eFolio.getText().toString(),arrayArticulos.get(i).getArticuloCodigo(),lRecibido,i);
                                             }
                                         }
@@ -308,7 +314,7 @@ public class MainActivity extends AppCompatActivity {
                                     revisaArticulo(eCodigoArt.getText().toString());
                                 }
                             }else{
-                                Toast.makeText(MainActivity.this, "entro a edicion", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(MainActivity.this, "entro a edicion", Toast.LENGTH_SHORT).show();
                                 for(int i=0;i<arrayArticulos.size();i++){
                                     if(arrayArticulos.get(i).getArticuloCodigo().equals(eCodigoArt.getText().toString())){
                                         int lRecibido;
@@ -321,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
                                         if (vTtipo.equals("Excedentes")){
 
                                         }else{
-                                            if (lRecibido>arrayArticulos.get(i).getTPedido()){
+                                            if (lRecibido>arrayArticulos.get(i).getTPedido() && vTtipo.equals("")){
                                                 vTtipo="Excedentes";
                                             }
                                         }
@@ -332,29 +338,29 @@ public class MainActivity extends AppCompatActivity {
 
                                         if (yaestaenisidencias==true){
                                             if(vTtipo.equals("Excedentes")){
-                                                Toast.makeText(MainActivity.this, "entro a ya como incidente y de excedente", Toast.LENGTH_SHORT).show();
+                                                //Toast.makeText(MainActivity.this, "entro a ya como incidente y de excedente", Toast.LENGTH_SHORT).show();
                                                 if(lRecibido>arrayArticulos.get(i).getTPedido()){
-                                                    Toast.makeText(MainActivity.this, "entro a guardar incidentes", Toast.LENGTH_SHORT).show();
+                                                    //Toast.makeText(MainActivity.this, "entro a guardar incidentes", Toast.LENGTH_SHORT).show();
                                                     guardarDatosInsidencias(eFolio.getText().toString().replace(" ",""), arrayArticulos.get(i).ArticuloCodigo, arrayArticulos.get(i).ArticuloDescripcion, lRecibido-arrayArticulos.get(i).getTPedido(), vTtipo,i);
                                                 }else{
-                                                    Toast.makeText(MainActivity.this, "entro a eliminar incidentes |"+eFolio.getText().toString().replace(" ","")+","+arrayArticulos.get(i).getArticuloCodigo()+","+String.valueOf(i), Toast.LENGTH_SHORT).show();
+                                                    //Toast.makeText(MainActivity.this, "entro a eliminar incidentes |"+eFolio.getText().toString().replace(" ","")+","+arrayArticulos.get(i).getArticuloCodigo()+","+String.valueOf(i), Toast.LENGTH_SHORT).show();
                                                     eliminaincidencias(eFolio.getText().toString().replace(" ",""),arrayArticulos.get(i).getArticuloCodigo(),i);
                                                 }
 
                                             }else{
-                                                Toast.makeText(MainActivity.this, "entro a ya incidente pero no excedente", Toast.LENGTH_SHORT).show();
+                                                //Toast.makeText(MainActivity.this, "entro a ya incidente pero no excedente", Toast.LENGTH_SHORT).show();
                                                 guardarDatosInsidencias(eFolio.getText().toString().replace(" ",""), arrayArticulos.get(i).ArticuloCodigo, arrayArticulos.get(i).ArticuloDescripcion, lRecibido, vTtipo,i);
                                             }
 
 
                                         }else{
-                                            Toast.makeText(MainActivity.this, "entro a que no era incidencia", Toast.LENGTH_SHORT).show();
+                                            //Toast.makeText(MainActivity.this, "entro a que no era incidencia", Toast.LENGTH_SHORT).show();
                                             if(vTtipo.equals("Excedentes")){
-                                                Toast.makeText(MainActivity.this, "entro a guardar pedido e incidencia", Toast.LENGTH_SHORT).show();
+                                                //Toast.makeText(MainActivity.this, "entro a guardar pedido e incidencia", Toast.LENGTH_SHORT).show();
                                                 guardarDatosPedido(eFolio.getText().toString(),arrayArticulos.get(i).getArticuloCodigo(),lRecibido - arrayArticulos.get(i).getTPedido(),i);
                                                 guardarDatosInsidencias(eFolio.getText().toString().replace(" ",""), arrayArticulos.get(i).ArticuloCodigo, arrayArticulos.get(i).ArticuloDescripcion, lRecibido-arrayArticulos.get(i).getTPedido(), vTtipo,i);
                                             }else{
-                                                Toast.makeText(MainActivity.this, "entro a a guardar solo pedido", Toast.LENGTH_SHORT).show();
+                                                //Toast.makeText(MainActivity.this, "entro a a guardar solo pedido", Toast.LENGTH_SHORT).show();
                                                 guardarDatosPedido(eFolio.getText().toString(),arrayArticulos.get(i).getArticuloCodigo(),lRecibido,i);
                                             }
 
@@ -861,6 +867,7 @@ public class MainActivity extends AppCompatActivity {
 
                 eCodigoArt.setEnabled(true);
                 eFolio.setEnabled(false);
+                eCodigoArt.requestFocus();
             }else{
                 Toast.makeText(MainActivity.this, "Folio No encontrado", Toast.LENGTH_SHORT).show();
                 eCodigoArt.setEnabled(false);
@@ -1247,12 +1254,12 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject jsonobject=jsonarr.getJSONObject(i);
 
                 if(jsonobject.optString("resultado")=="true"){
-                    Excedentes.add(posision);
+                    if(Tipo.equals("Excedentes")){
+                        Excedentes.add(posision);
+                    }
                 }else{
                     Toast.makeText(MainActivity.this, "Ocurrio un error al intentar guardar este articulo.", Toast.LENGTH_SHORT).show();
-                    arrayArticulos.remove(posision);
-                    Lista.setAdapter(null);
-                    Lista.setAdapter(Adapter);
+
                 }
 
             }
@@ -1262,23 +1269,17 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             conn.disconnect();
             Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
-            arrayArticulos.remove(posision);
-            Lista.setAdapter(null);
-            Lista.setAdapter(Adapter);
+
         } catch (IOException e) {
             e.printStackTrace();
             conn.disconnect();
             Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
-            arrayArticulos.remove(posision);
-            Lista.setAdapter(null);
-            Lista.setAdapter(Adapter);
+
         } catch (JSONException e) {
             e.printStackTrace();
             conn.disconnect();
             Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
-            arrayArticulos.remove(posision);
-            Lista.setAdapter(null);
-            Lista.setAdapter(Adapter);
+
         }
     }
 
@@ -1369,24 +1370,27 @@ public class MainActivity extends AppCompatActivity {
 
             jsonarr=new JSONArray(json);
 
-            for (int i=0;i<jsonarr.length();i++){
-                JSONObject jsonobject=jsonarr.getJSONObject(i);
+            if(jsonarr.length()>0){
+                for (int i=0;i<jsonarr.length();i++){
+                    JSONObject jsonobject=jsonarr.getJSONObject(i);
 
-                tProveedor.setText(jsonobject.optString("ProveedorNombre"));
-                tFecha.setText(jsonobject.optString("FechaInsert"));
+                    tProveedor.setText(jsonobject.optString("ProveedorNombre"));
+                    tFecha.setText(jsonobject.optString("FechaInsert"));
 
-                if(jsonobject.optString("PedidosSurtido")=="true"){
-                    inhabilitaTodo();
-                    aviso("Aviso","Pedido Bloqueado por estatus de surtido.");
-                    baviso.show();
-                }else{
-                    bGuardar.setEnabled(true);
+                    if(jsonobject.optString("PedidosSurtido")=="true"){
+                        inhabilitaTodo();
+                        aviso("Aviso","Pedido Bloqueado por estatus de surtido.");
+                        baviso.show();
+                    }else{
+                        bGuardar.setEnabled(true);
+                    }
+
                 }
-
+                conn.disconnect();
+                agregarIsidencias(eFolio.getText().toString());
+            }else{
+                conn.disconnect();
             }
-
-            conn.disconnect();
-            agregarIsidencias(eFolio.getText().toString());
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -1682,18 +1686,20 @@ public class MainActivity extends AppCompatActivity {
 
                 if (jsonobject.optString("Tipo").equals("Articulo No pedido")){
                     Articulo=new Pedido(jsonobject.optString("ArticuloCodigo"),jsonobject.optString("ArticuloDescripcion"),0,Integer.parseInt(jsonobject.optString("Cantidad")));
+                    arrayArticulos.add(Articulo);
                     if(arrayArticulos.size()>0){
                         Nopedidos.add(arrayArticulos.size()-1);
                     }else{
-                        Nopedidos.add(arrayArticulos.size());
+                        Nopedidos.add(arrayArticulos.size()-1);
                     }
                 }
                 if (jsonobject.optString("Tipo").equals("Articulo Nuevo")){
                     Articulo=new Pedido(jsonobject.optString("ArticuloCodigo"),jsonobject.optString("ArticuloDescripcion"),0,Integer.parseInt(jsonobject.optString("Cantidad")));
+                    arrayArticulos.add(Articulo);
                     if (Insidencias.size()>0){
                         Insidencias.add(arrayArticulos.size() -1);
                     }else{
-                        Insidencias.add(arrayArticulos.size());
+                        Insidencias.add(arrayArticulos.size()-1);
                     }
                 }
                 if (jsonobject.optString("Tipo").equals("Excedentes")){
@@ -1895,8 +1901,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         try {
-
-
             conn.setRequestMethod("GET");
             conn.connect();
 
@@ -1918,18 +1922,15 @@ public class MainActivity extends AppCompatActivity {
 
             jsonarr=new JSONArray(json);
 
-
-
-
             if (jsonarr.length()>0){
                 for (int i=0;i<jsonarr.length();i++){
                     JSONObject jsonobject=jsonarr.getJSONObject(i);
 
                     if(jsonobject.optString("resultado")=="true"){
-                       /* if(Excedentes.size()>0){
+                        if(Excedentes.size()>0){
                             int filaelimina=0;
                             for(int e=0;e<Excedentes.size();e++){
-                                if(Integer.parseInt(String.valueOf(Insidencias.get(e)))==posision){
+                                if(Integer.parseInt(String.valueOf(Excedentes.get(e)))==posision){
                                     filaelimina=e;
                                     break;
                                 }
@@ -1937,7 +1938,7 @@ public class MainActivity extends AppCompatActivity {
                             if(filaelimina!=0) {
                                 Excedentes.remove(filaelimina);
                             }
-                        }*/
+                        }
                     }else{
 
                     }
@@ -1946,8 +1947,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
             conn.disconnect();
-
-
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -1962,6 +1961,15 @@ public class MainActivity extends AppCompatActivity {
             conn.disconnect();
             Toast.makeText(MainActivity.this, "Fallo la conexion al servidor [OPENPEDINS]", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void refrescarlista(){
+        arrayArticulos.clear();
+        Excedentes.clear();
+        Insidencias.clear();
+        Nopedidos.clear();
+        Lista.setAdapter(null);
+        RecibaDatos(eFolio.getText().toString());
     }
 
 
